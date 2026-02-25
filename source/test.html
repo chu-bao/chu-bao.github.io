@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <h1>Test Page</h1>
+    <p>root is: <span id="root"></span></p>
+    <script>
+        document.getElementById('root').textContent = '{{ config.root }}';
+    </script>
+</body>
+</html>

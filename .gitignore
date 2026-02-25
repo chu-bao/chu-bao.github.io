@@ -1,0 +1,16 @@
+# 依赖文件夹
+node_modules/
+
+# 生成的静态文件
+public/
+
+# 部署文件夹
+.deploy_git/
+
+# 临时文件
+db.json
+*.log
+
+# 系统文件
+.DS_Store
+Thumbs.db
