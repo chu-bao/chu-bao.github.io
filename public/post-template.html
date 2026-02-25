@@ -1,0 +1,487 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="dynamic-title">文章 · SYLVIE</title>
+    
+    <style>
+        /* ===== 全局重置 - 纯白明亮 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #1e2e3e;
+            line-height: 1.7;
+        }
+        
+        .custom-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+            background: #f8f9fa;
+        }
+        
+        /* 导航 */
+        .site-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-bottom: 1rem;
+            
+        }
+        
+        .site-logo {
+            font-size: 1.6rem;
+            font-weight: 350;
+            color: #2c3e50;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        
+        .site-logo:hover {
+            color: #FF6600;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-item {
+            padding: 0.4rem 1.2rem;
+            color: #5e6f7e;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+        
+        .nav-item:hover {
+            background: #fff1e6;
+            color: #FF6600;
+        }
+        
+        .nav-item.active {
+            background: #FF6600;
+            color: white;
+        }
+        
+        /* 文章头部 - 位于灰色线下方 */
+        .article-header {
+            margin: 0 0 2rem 0;
+            text-align: left;
+        }
+        
+        .article-title {
+            font-family: "Microsoft YaHei", "PingFang SC", "STKaiti", "KaiTi", serif;  
+           font-size: 2.0rem;
+            font-weight: 550;
+            color: #1a2a3a;
+            line-height: 1.2;
+            margin-bottom: 1.2rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            color: #7a8b99;
+            font-size: 0.95rem;
+        }
+        
+        .meta-date {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #f5f7f9;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+        }
+        
+        .meta-category {
+            background: rgba(255, 102, 0, 0.06);
+            color: #FF6600;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 500;
+            border: 1px solid rgba(255,102,0,0.15);
+        }
+        
+        /* ===== 分隔线 ===== */
+        .divider-line {
+            width: 100%;
+            height: 1px;
+            background: repeating-linear-gradient(
+                90deg,
+                #999 0px,
+                #999 3px,
+                transparent 3px,
+                transparent 6px
+            );
+            margin: 0.2rem 0 2rem 0;
+        }
+        
+        /* ===== 文章卡片 - 带灰色虚线边框 ===== */
+        .article-card {
+            background: white;
+            border-radius: 16px;
+            padding: 0;  /* 无内边距，图片贴边 */
+            box-shadow: 0 8px 35px rgba(0,0,0,0.02);
+            border: 1px dashed #ccc;  /* 灰色虚线边框 */
+            margin-bottom: 3rem;
+            overflow: hidden;
+        }
+        
+        /* 文章图片区域 */
+        .article-image {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            background-color: #f5f5f5;
+            
+        }
+        
+        .article-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        /* 文章内容区域 */
+        .article-content-wrapper {
+            padding: 2.5rem;
+        }
+         @font-face {
+    font-family: 'MyCustomFont';
+    src: url('/font/LXGWWenKaiGB-Medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+        /* 正文排版 */
+        .post-content {
+            font-size: 1.1rem;
+            color: #2e4053;
+           font-family: 'MyCustomFont', "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        
+        .post-content h1 {
+            font-size: 2rem;
+            margin: 2rem 0 1rem;
+            color: #1a2a3a;
+            font-weight: 600;
+        }
+        
+        .post-content h2 {
+            font-size: 1.7rem;
+            margin: 2rem 0 1rem;
+            color: #1e2e3e;
+            font-weight: 550;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f2f4;
+        }
+        
+        .post-content p {
+            margin-bottom: 1.6rem;
+            color: #3a4c5c;
+        }
+        
+        .post-content a {
+            color: #FF6600;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,102,0,0.3);
+        }
+        
+        .post-content a:hover {
+            color: #e65c00;
+            border-bottom-color: #FF6600;
+        }
+        /* 带头像的logo样式 */
+.site-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 350;
+    color: #2c3e50;
+    text-decoration: none;
+    letter-spacing: 1px;
+}
+
+.site-avatar {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;      /* 保持图片比例，可能会裁剪 */
+    /* object-fit: contain;  */ /* 保持完整图片，可能有留白 */
+ 
+    transition: transform 0.2s ease;
+    border-radius: 0;        /* 确保没有圆角 */
+}
+
+.site-logo:hover .site-avatar {
+    transform: scale(1.05);
+    border-color: #FF6600;
+}
+
+
+        .post-content img {
+            max-width: 100%;
+            border-radius: 20px;
+            margin: 2rem 0;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .post-content blockquote {
+            margin: 2rem 0;
+            padding: 1.5rem 2rem;
+            background: #fcf8f6;
+            border-left: 5px solid #FF8A5C;
+            border-radius: 0 20px 20px 0;
+            color: #4e6579;
+        }
+       
+        .post-content code {
+            background: #f4f6f8;
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.95em;
+            color: #FF6600;
+            font-family: 'SF Mono', Monaco, Consolas, monospace;
+        }
+        
+        .post-content pre {
+            background: #faf8f7;
+            padding: 1.5rem;
+            border-radius: 20px;
+            overflow-x: auto;
+            border: 1px solid #eee;
+            margin: 1.8rem 0;
+        }
+        
+        /* 文章底部 */
+        .article-footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px dashed #ccc;  /* 改为虚线 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .post-tags {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        
+        .tag-item {
+            background: #f4f6f9;
+            color: #4f6f8f;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .tag-item:hover {
+            background: #FF6600;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .custom-content {
+                padding: 0 1.2rem 2rem;
+            }
+            .article-title {
+                font-size: 2rem;
+            }
+            .article-content-wrapper {
+                padding: 1.5rem;
+            }
+            .article-image {
+                height: 200px;
+            }
+            .site-nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-content">
+        <!-- 导航 -->
+        <nav class="site-nav">
+            <a href="/" class="site-logo"><img src="/images/头像.png" alt="avatar" class="site-avatar">SYLVIE</a>
+            <div class="nav-menu">
+                <a href="/" class="nav-item">首页</a>
+                <a href="/blog-custom/" class="nav-item">博客</a>
+                <a href="/archives/" class="nav-item">归档</a>
+                <a href="/categories/" class="nav-item">分类</a>
+            </div>
+        </nav>
+        
+        <!-- 灰色分隔线 -->
+        <div class="divider-line"></div>
+        
+        <!-- 文章内容 - 由JavaScript动态加载 -->
+        <div id="post-container">
+            <div style="text-align: center; padding: 4rem; color: #999;">
+                📖 加载文章中...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== 核心：从URL获取文章路径，从content.json加载数据 =====
+        (function() {
+            const container = document.getElementById('post-container');
+            
+            // 1. 获取当前文章的路径
+            const urlParams = new URLSearchParams(window.location.search);
+            const postPath = urlParams.get('path');
+            
+            if (!postPath) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 4rem; color: #b45309;">
+                        ⚠️ 未指定文章路径<br>
+                        <span style="font-size: 0.9rem; color: #888;">请使用 ?path=/文章/路径/ 访问</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 2. 请求content.json
+            fetch('/content.json?t=' + Date.now())
+                .then(res => res.json())
+                .then(data => {
+                    let posts = Array.isArray(data) ? data : (data.posts || []);
+                    
+                    // 获取URL中的文章路径
+                    const urlPath = new URLSearchParams(window.location.search).get('path');
+                    console.log('请求路径:', urlPath);
+                    
+                    if (!urlPath) {
+                        throw new Error('未指定文章路径');
+                    }
+                    
+                    // 提取URL中的文件名
+                    const urlParts = urlPath.split('/').filter(Boolean);
+                    const urlFileName = urlParts.pop();
+                    console.log('文件名:', urlFileName);
+                    
+                    // 智能匹配文章
+                    let post = null;
+                    
+                    // 1. 精确匹配路径
+                    post = posts.find(p => p.path === urlPath || '/' + p.path === urlPath);
+                    
+                    // 2. 按文件名匹配
+                    if (!post) {
+                        post = posts.find(p => {
+                            const pPath = p.path;
+                            const pFileName = pPath.split('/').filter(Boolean).pop().replace(/\.html$/, '');
+                            return pFileName === urlFileName || pFileName.includes(urlFileName) || urlFileName.includes(pFileName);
+                        });
+                    }
+                    
+                    // 3. 按标题匹配
+                    if (!post) {
+                        post = posts.find(p => 
+                            p.title === urlFileName || 
+                            p.title.includes(urlFileName) || 
+                            urlFileName.includes(p.title)
+                        );
+                    }
+                    
+                    if (!post) {
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: 4rem;">
+                                <h3 style="color: #b45309;">❌ 未找到文章</h3>
+                                <p style="color: #666; margin-top: 1rem;">路径: ${urlPath}</p>
+                                <p style="color: #888; margin-top: 0.5rem;">可用的文章: ${posts.map(p => p.title).join(', ')}</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    // 找到文章，渲染页面
+                    document.title = `${post.title} · SYLVIE`;
+                    
+                    // 格式化日期
+                    let dateStr = '日期未知';
+                    try {
+                        const d = new Date(post.date);
+                        dateStr = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+                    } catch(e) {}
+                    
+                    // 获取分类
+                    let category = '';
+                    if (post.categories && post.categories[0]) {
+                        category = post.categories[0].name || post.categories[0];
+                    }
+                    
+                    // 获取标签
+                    let tags = [];
+                    if (post.tags) {
+                        tags = post.tags.map(t => t.name || t);
+                    }
+                    
+                    // 获取内容
+                    let content = post.content || '<p>暂无文章内容</p>';
+                    
+                    // 获取文章图片（优先使用thumbnail，没有则用默认图片）
+                    const articleImage = post.thumbnail || '/images/default-post.jpg';
+                    
+                    // 渲染
+                   // 渲染 - 去掉标签和分类
+container.innerHTML = `
+    <div class="article-header">
+        <h1 class="article-title">${post.title}</h1>
+        <div class="article-meta">
+            <span class="meta-date">📅 ${dateStr}</span>
+            <!-- 分类已删除 -->
+        </div>
+    </div>
+    
+    <article class="article-card">
+        <div class="article-image">
+            <img src="${articleImage}" alt="${post.title}" loading="lazy">
+        </div>
+        <div class="article-content-wrapper">
+            <div class="post-content">
+                ${content}
+            </div>
+            <!-- 标签区域已删除 -->
+        </div>
+    </article>
+`;
+                })
+                .catch(error => {
+                    console.error('加载失败:', error);
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 4rem;">
+                            <h3 style="color: #b45309;">⚠️ 加载失败</h3>
+                            <p style="color: #666;">${error.message}</p>
+                        </div>
+                    `;
+                }); 
+        })();
+    </script>
+</body>
+</html>

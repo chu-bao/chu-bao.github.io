@@ -1,0 +1,637 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYLVIE's Blog</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval';">
+    
+    <style>
+        /* 导航样式 */
+        .my-logo, .nav-link {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
+            font-weight: 500;
+            font-size: 22px !important;
+        }
+
+        .nav-link {
+            padding: 0.6rem 1.8rem;
+            text-decoration: none;
+            color: rgba(0, 204, 153, 0.9);
+            font-size: 0.95rem;
+            border-radius: 20px;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #FF6600 !important;
+            background: rgba(255, 255, 255, 0.2);
+            text-decoration: underline dashed #FF6600 2px;
+            text-underline-offset: 12px;
+        }
+
+        .nav-link:hover::after {
+            width: 70%;
+            opacity: 1;
+        }
+
+        /* 隐藏Hexo主题元素 */
+        body > *:not(.custom-content):not(script):not(style) {
+            display: none !important;
+        }
+        
+        .custom-content {
+            display: block !important;
+            width: 100%;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: #f8f9fa;
+        }
+
+        /* 顶部横幅 - 显示图片顶部 */
+        .custom-top-banner {
+            width: 100%;
+            height: 280px !important;
+            min-height: 280px !important;
+            max-height: 280px !important;
+            background: url('/images/blog.png') center top / cover no-repeat;
+            background-color: #2c3e50;
+            position: relative;
+            margin-bottom: 30px;
+            flex-shrink: 0;
+            flex-grow: 0;
+            overflow: hidden;
+            background-attachment: scroll;
+        }
+        
+        .custom-top-nav {
+            padding: 1.0rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-wrapper {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        
+        .my-logo {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: white;
+            text-decoration: none;
+            background: rgba(255,255,255,0.1);
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+        }
+        
+        .my-nav-menu {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .banner-heading {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+        }
+        
+        .main-heading {
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .sub-heading {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .stats-box {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .stat {
+            text-align: center;
+            background: rgba(0,0,0,0.2);
+            padding: 0.4rem 1.5rem;
+            border-radius: 50px;
+            backdrop-filter: blur(4px);
+        }
+        
+        .stat-num {
+            font-size: 1.6rem;
+            font-weight: 400;
+            display: block;
+            color: white;
+        }
+        
+        .stat-text {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.85);
+        }
+        
+        .page-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .page-layout {
+            display: block;
+            margin-top: 0.2rem;
+        }
+        
+        .post-card {
+    background: white;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    width: 100%;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.03);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0;  /* 卡片本身无内边距 */
+}
+        
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+        }
+        
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+        
+        .post-date {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #f1f3f5;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            color: #4a5c6c;
+        }
+       
+        .post-title {
+            color: #1e2e3e;
+            margin: 0 0 1rem 0;
+            font-size: 1.6rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        .post-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+        
+        .post-title a:hover {
+            color: #FF6600;
+        }
+        
+        .post-desc {
+            color: #4a5c6a;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .read-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #FF6600;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1.4rem;
+            border-radius: 30px;
+            background: rgba(255, 102, 0, 0.06);
+            border: 1px solid rgba(255,102,0,0.2);
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+        
+        .read-btn:hover {
+            background: #FF6600;
+            color: white;
+        }
+        
+        .sidebar-right {
+            background: white;
+            border-radius: 16px;
+            padding: 1.8rem;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.03);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e2e3e;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid #f1f3f5;
+        }
+        
+        .category-list {
+            list-style: none;
+        }
+        
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            color: #4a5c6a;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .loading-state, .error-state, .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 16px;
+            color: #666;
+        }
+        
+        /* ===== 分隔线样式 - 文字在上，虚线在下，左端对齐 ===== */
+        .divider-wrapper {
+            width: 100%;
+            margin: 3.5rem 0 1.2rem 0;
+            position: relative;
+        }
+        
+        .divider-title {
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+            text-align: left;
+            line-height: 1.4;
+            padding-left: 0;
+            color:#777777;
+        }
+        
+        .divider-line {
+            width: 100%;
+            height: 1px;
+            background: repeating-linear-gradient(
+                90deg,
+                #999 0px,
+                #999 3px,
+                transparent 3px,
+                transparent 6px
+            );
+        }
+        
+        /* 响应式 - 只调整布局，绝不改变顶部banner高度 */
+        @media (max-width: 992px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+            }
+            .my-nav-menu {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .main-heading {
+                font-size: 2.2rem;
+            }
+            .stats-box {
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+            .sidebar-right {
+                position: static;
+                margin-top: 2rem;
+            }
+            .nav-wrapper {
+                flex-direction: column;
+                gap: 1rem;
+                justify-content: center;
+            }
+        }
+
+        /* 确保任何屏幕尺寸下banner高度都绝对固定 */
+        @media (max-width: 768px) {
+            .custom-top-banner {
+                height: 280px !important;
+                min-height: 280px !important;
+                max-height: 280px !important;
+            }
+            .divider-wrapper {
+                margin: 2.5rem 0 0.5rem 0;
+            }
+        }
+        
+        @media (min-width: 1920px) {
+            .custom-top-banner {
+                height: 280px !important;
+                min-height: 280px !important;
+                max-height: 280px !important;
+            }
+        }
+/* 文章卡片新样式 - 上图片下文字 */
+.post-card {
+    background: white;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    width: 100%;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.03);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.post-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+}
+
+/* 图片区域 */
+.post-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+.post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+.post-card:hover .post-image img {
+    transform: scale(1.05);
+}
+
+/* 内容区域 */
+.post-content-wrapper {
+    padding: 1.8rem 2.2rem;
+}
+
+.post-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+    color: #666;
+    font-size: 0.9rem;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #f1f3f5;
+    padding: 0.2rem 1rem;
+    border-radius: 30px;
+    color: #4a5c6c;
+}
+
+.post-cat {
+    padding: 0.2rem 1rem;
+    border-radius: 6px;        /* 从30px改为12px，圆角变小 */
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+    display: inline-block;
+    transition: all 0.2s ease;
+    margin-right: 0.5rem;
+}
+.post-cat:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+}
+.post-title {
+    color: #1e2e3e;
+    margin: 0 0 0.8rem 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.post-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.post-title a:hover {
+    color: #FF6600;
+}
+
+.post-desc {
+    color: #4a5c6a;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+    </style>
+</head>
+<body>
+    <div class="custom-content">
+        <header class="custom-top-banner">
+            <nav class="custom-top-nav">
+                <div class="nav-wrapper">
+                    <div class="my-nav-menu">
+                        <a href="/" class="nav-link">🏡 首页</a>
+                        <a href="/blog-custom/" class="nav-link active">🗺️ 博客</a>
+                        <a href="/custom-archives/" class="nav-link">🗄️ 归档</a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <div class="page-container">
+            <!-- 分隔线区域 - 文字在上，虚线在下，左端对齐 -->
+            <div class="divider-wrapper">
+                <div class="divider-title">🌸发现</div>
+                <div class="divider-line"></div>
+            </div>
+            
+            <div class="page-layout">
+                <main class="posts-column" id="posts-container">
+                    <div class="loading-state">📚 加载文章中...</div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        const container = document.getElementById('posts-container');
+        
+        container.innerHTML = '<div class="loading-state">📚 加载文章中...</div>';
+        
+        fetch('/content.json?t=' + Date.now())
+            .then(response => {
+                if (!response.ok) throw new Error('content.json 不存在');
+                return response.json();
+            })
+            .then(data => {
+                let posts = Array.isArray(data) ? data : (data.posts || []);
+                
+                if (posts.length === 0) {
+                    container.innerHTML = '<div class="empty-state">📭 暂无文章</div>';
+                    return;
+                }
+                
+                // ===== 颜色函数 =====
+                const categoryColors = [
+                    { bg: 'rgba(52, 152, 219, 0.15)', text: '#2980b9' },  // 技术 - 蓝色
+                    { bg: 'rgba(46, 204, 113, 0.15)', text: '#27ae60' },  // 教程 - 绿色
+                    { bg: 'rgba(155, 89, 182, 0.15)', text: '#8e44ad' },  // 设计 - 紫色
+                    { bg: 'rgba(241, 196, 15, 0.15)', text: '#f39c12' },  // 随笔 - 橙色
+                    { bg: 'rgba(231, 76, 60, 0.15)', text: '#c0392b' },   // 公告 - 红色
+                    { bg: 'rgba(26, 188, 156, 0.15)', text: '#16a085' },  // 其他 - 青绿
+                    { bg: 'rgba(52, 73, 94, 0.15)', text: '#2c3e50' },    // 其他 - 深蓝灰
+                    { bg: 'rgba(243, 156, 18, 0.15)', text: '#d35400' },  // 其他 - 橙黄
+                ];
+
+                // 颜色缓存
+                const colorCache = new Map();
+
+                // 获取分类颜色样式
+                function getCategoryStyle(category) {
+                    if (!colorCache.has(category)) {
+                        const index = colorCache.size % categoryColors.length;
+                        colorCache.set(category, categoryColors[index]);
+                    }
+                    const color = colorCache.get(category);
+                    return `background-color: ${color.bg}; color: ${color.text}; border-color: ${color.bg.replace('0.15', '0.3')};`;
+                }
+                // ===== 颜色函数结束 =====
+                
+                posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                let html = '';
+                posts.forEach(post => {
+    let dateStr = '日期未知';
+    try {
+        const d = new Date(post.date);
+        dateStr = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+    } catch(e) {}
+    
+    // ===== 处理所有分类 - 带链接版本 =====
+    let categoriesHtml = '';
+    if (post.categories && post.categories.length > 0) {
+        categoriesHtml = post.categories.map(cat => {
+            // 获取分类名称和slug
+            let catName = '';
+            let catSlug = '';
+            
+            if (typeof cat === 'string') {
+                catName = cat;
+                catSlug = cat;
+            } else if (cat && typeof cat === 'object') {
+                catName = cat.name || '';
+                catSlug = cat.slug || cat.name || '';
+            }
+            
+            if (!catName) return '';
+            
+            // 分类链接（Hexo默认格式）
+            const categoryLink = `/categories/?cat=${encodeURIComponent(catName)}`;
+            
+            // 返回带链接的分类标签
+            return `<a href="${categoryLink}" class="post-cat-link"><span class="post-cat" style="${getCategoryStyle(catName)}">${catName}</span></a>`;
+        }).join('');
+    }
+    
+    const postPath = post.path.startsWith('/') ? post.path : '/' + post.path;
+    const link = `/post-template.html?path=${encodeURIComponent(postPath)}`;
+    
+    let excerpt = post.excerpt || post.content 
+        ? (post.excerpt || post.content.replace(/<[^>]*>/g, '').substring(0, 120) + '…')
+        : '';
+    
+    html += `
+        <article class="post-card">
+            <div class="post-image">
+                <img src="${post.thumbnail || '/images/default-post.jpg'}" alt="${post.title}" loading="lazy">
+            </div>
+            <div class="post-content-wrapper">
+                <div class="post-meta">
+                    ${categoriesHtml}
+                </div>
+                <h2 class="post-title">
+                    <a href="${link}">${post.title || '无标题'}</a>
+                </h2>
+                <p class="post-desc">${excerpt}</p>
+            </div>
+        </article>
+    `;
+});
+                
+                container.innerHTML = html;
+            })
+            .catch(error => {
+                container.innerHTML = `
+                    <div class="error-state">
+                        <span style="font-size:1.5rem;">⚠️</span>
+                        <h3 style="color:#b45309;">加载失败</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            });
+    })();
+</script>
+</body>
+</html>
