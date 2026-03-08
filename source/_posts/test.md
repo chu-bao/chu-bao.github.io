@@ -1,7 +1,7 @@
 ---
 title: 新概念英语第二册
 date: 2025-05-08
-thumbnail: /images/22.png
+thumbnail: /images/123.png
 categories:
   - 测试
 ---
