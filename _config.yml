@@ -108,7 +108,7 @@ skip_render:
   - archives/index.html
   - archives/**
 # 文章JSON数据
-# 文章JSON数据
+
 jsonContent:
   meta: false
   pages: false
@@ -124,3 +124,13 @@ jsonContent:
     content: true
     comments: false
     tags: true   
+busuanzi_count:
+  enable: true
+  total_visitors: true
+  total_visitors_icon: user
+  total_views: true
+  total_views_icon: eye
+  post_views: true
+  post_views_icon: eye
+plugins:
+  - hexo-directory-category
