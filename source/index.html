@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome</title>
+    <title>SYLVIE的个人网站</title>
     <style>
     body {
         background: url('/images/bg.jpg') center/cover no-repeat fixed;
@@ -29,8 +29,10 @@
         z-index: 3;
         text-align: center;
         padding: 2rem;
-        margin-top: -50px;
-        margin-left: -800px;
+        margin-top: 650px;
+        margin-left: 0;
+        width: 100%;
+        max-width: 600px;
     }
     
     h1 {
@@ -38,30 +40,14 @@
         margin-bottom: 1rem;
         letter-spacing: 5px;
         font-weight: 300;
-    }
-    
-    .buttons {
-        margin-top: 2rem;
-    }
-    
-    .btn {
-        color: white;
-        border: 2px solid white;
-        padding: 10px 32px;
-        margin: 0 10px;
-        text-decoration: none;
+        cursor: pointer;
         display: inline-block;
-        transition: 0.3s;
-        font-size: 0.9rem;
+        transition: transform 0.3s ease;
     }
     
-    a[href*="github"] {
-        padding: 9px 28px;
-    }
-    
-    .btn:hover {
-        background: white;
-        color: black;
+    h1:hover {
+        transform: scale(1.05);
+        text-shadow: 0 0 10px rgba(255,255,255,0.5);
     }
 
     /* 蒲公英图片样式 */
@@ -77,43 +63,23 @@
         filter: 
             drop-shadow(0 0 8px rgba(255,255,255,0.5))
             drop-shadow(0 0 15px rgba(255,255,255,0.2))
-            brightness(1.15) /* 更白 */
+            brightness(1.15)
             contrast(1.05);
         -webkit-filter: 
             drop-shadow(0 0 8px rgba(255,255,255,0.5))
             drop-shadow(0 0 15px rgba(255,255,255,0.2))
             brightness(1.15)
             contrast(1.05);
-        mix-blend-mode: screen; /* 更通透的混合模式 */
+        mix-blend-mode: screen;
     }
 </style>
 </head>
 <body>
     <div class="content">
-        <h1>SYLVIE</h1>
-        <div class="buttons">
-            <a href="blog-custom.html" class="btn">Blog</a>
-            <a href="https://github.com" class="btn">GitHub</a>
-        </div>
+        <!-- 点击SYLVIE文字跳转到博客 -->
+        <h1 onclick="window.location.href='/blog-custom.html'">SYLVIE</h1>
     </div>
 
-    <!-- 测试按钮 -->
-    <button id="testBtn" style="
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        z-index: 1000;
-        padding: 8px 16px;
-        background: rgba(255,255,255,0.9);
-        color: #333;
-        border: 1px solid rgba(255,255,255,0.5);
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-    ">
-        更多蒲公英 🌼
-    </button>
-    
     <script>
     // 蒲公英图片URL
     const DANDELION_IMAGE_URL = '/images/dandelion.png';
@@ -122,7 +88,7 @@
     class DandelionManager {
         constructor() {
             this.dandelions = [];
-            this.maxDandelions = 35; // 适当数量，避免过多
+            this.maxDandelions = 35;
             this.lastAnimationTime = 0;
             this.animationFrameId = null;
             this.init();
@@ -134,14 +100,9 @@
             // 预加载图片
             this.preloadImage();
             
-            // 测试按钮
-            document.getElementById('testBtn').addEventListener('click', () => {
-                this.createDandelionGroup(5);
-            });
-            
-            // 点击创建蒲公英
+            // 点击创建蒲公英（排除标题）
             document.addEventListener('click', (e) => {
-                if (e.target.id !== 'testBtn' && !e.target.closest('.btn')) {
+                if (e.target.tagName !== 'H1') {
                     this.createDandelion(e.clientX, e.clientY);
                 }
             });
@@ -205,28 +166,16 @@
             element.src = DANDELION_IMAGE_URL;
             element.alt = '蒲公英';
             
-            // 飘逸参数 - 更慢更随机的运动
-            const scale = 0.6 + Math.random() * 0.7; // 大小：0.6-1.3
+            const scale = 0.6 + Math.random() * 0.7;
             const initialRotate = Math.random() * 360;
-            
-            // 更慢的下落速度：18-30秒
             const duration = 18000 + Math.random() * 12000;
-            
-            // 更复杂的水平移动模式
-            const horizontalAmplitude = 80 + Math.random() * 120; // 水平振幅
-            const horizontalFrequency = 0.0003 + Math.random() * 0.0004; // 水平波动频率
-            
-            // 旋转速度更慢更随机
+            const horizontalAmplitude = 80 + Math.random() * 120;
+            const horizontalFrequency = 0.0003 + Math.random() * 0.0004;
             const rotateSpeed = -0.3 + Math.random() * 0.6;
-            
-            // 垂直波动参数 - 让蒲公英上下飘动
             const verticalAmplitude = 20 + Math.random() * 30;
             const verticalFrequency = 0.0005 + Math.random() * 0.0006;
-            
-            // 更白更透明
             const opacity = 0.75 + Math.random() * 0.15;
             
-            // 设置初始位置
             element.style.left = startX + 'px';
             element.style.top = startY + 'px';
             element.style.transform = `translate3d(0, 0, 0) rotate(${initialRotate}deg) scale(${scale})`;
@@ -234,7 +183,6 @@
             
             document.body.appendChild(element);
             
-            // 飘逸的数据结构
             const dandelionData = {
                 element: element,
                 startX: parseFloat(startX),
@@ -249,7 +197,6 @@
                 verticalAmplitude: verticalAmplitude,
                 verticalFrequency: verticalFrequency,
                 opacity: opacity,
-                // 随机相位偏移
                 phaseOffsetX: Math.random() * Math.PI * 2,
                 phaseOffsetY: Math.random() * Math.PI * 2
             };
@@ -264,38 +211,34 @@
                 setTimeout(() => {
                     const startX = Math.random() * window.innerWidth;
                     this.createDandelion(startX, -60 - Math.random() * 40);
-                }, i * 250); // 稍慢的创建间隔
+                }, i * 250);
             }
         }
         
         startCreating() {
             console.log('开始创建飘逸的蒲公英');
             
-            // 初始创建 - 分批次，更有层次感
             setTimeout(() => {
                 this.createDandelionGroup(6);
                 setTimeout(() => this.createDandelionGroup(5), 800);
                 setTimeout(() => this.createDandelionGroup(4), 1600);
             }, 500);
             
-            // 定期创建 - 间隔更长，更自然
             setInterval(() => {
                 if (this.dandelions.length < this.maxDandelions * 0.6) {
                     this.createDandelionGroup(3 + Math.floor(Math.random() * 3));
                 }
-            }, 7000); // 7秒间隔
+            }, 7000);
         }
         
         animateFloating() {
             const now = performance.now();
             
-            // 更新所有蒲公英
             for (let i = this.dandelions.length - 1; i >= 0; i--) {
                 const d = this.dandelions[i];
                 const elapsed = now - d.startTime;
                 
                 if (elapsed > d.duration) {
-                    // 动画结束
                     if (d.element.parentNode) {
                         d.element.parentNode.removeChild(d.element);
                     }
@@ -304,42 +247,26 @@
                 }
                 
                 const progress = elapsed / d.duration;
-                
-                // 使用缓动函数让开始和结束更自然
                 const easeProgress = this.easeInOutSine(progress);
                 
-                // 基础垂直位置 - 更慢的下落
                 const baseY = d.startY + (window.innerHeight + 100) * easeProgress;
-                
-                // 水平飘动 - 正弦波运动
                 const horizontalOffset = Math.sin(now * d.horizontalFrequency + d.phaseOffsetX) * 
                                        d.horizontalAmplitude * (1 - easeProgress * 0.3);
-                
-                // 垂直飘动 - 余弦波运动，模拟上下浮动
                 const verticalFloat = Math.cos(now * d.verticalFrequency + d.phaseOffsetY) * 
                                     d.verticalAmplitude * (1 - easeProgress * 0.4);
                 
-                // 最终位置
                 const currentX = d.startX + horizontalOffset;
                 const currentY = baseY + verticalFloat;
-                
-                // 旋转 - 更慢更自然
                 const currentRotate = d.initialRotate + (d.rotateSpeed * 180 * progress);
-                
-                // 透明度和大小变化 - 更平缓
                 const currentOpacity = d.opacity * (1 - easeProgress * 0.3);
-                const currentScale = d.scale * (0.9 + 0.1 * (1 - easeProgress)); // 稍微变小
-                
-                // 轻微的自旋摆动
+                const currentScale = d.scale * (0.9 + 0.1 * (1 - progress));
                 const spinSway = Math.sin(now * 0.001 + i) * 1.5;
                 
-                // 更新样式
                 d.element.style.transform = `translate3d(0, 0, 0) rotate(${currentRotate + spinSway}deg) scale(${currentScale})`;
                 d.element.style.left = currentX + 'px';
                 d.element.style.top = currentY + 'px';
                 d.element.style.opacity = currentOpacity.toString();
                 
-                // 动态发光效果 - 随飘动变化
                 const glowIntensity = 0.3 + 0.2 * Math.sin(now * 0.002 + i);
                 d.element.style.filter = `drop-shadow(0 0 ${6 + glowIntensity * 4}px rgba(255,255,255,${0.3 + glowIntensity * 0.2}))
                                          drop-shadow(0 0 ${12 + glowIntensity * 6}px rgba(255,255,255,${0.1 + glowIntensity * 0.1}))
@@ -350,17 +277,14 @@
             this.animationFrameId = requestAnimationFrame(() => this.animateFloating());
         }
         
-        // 缓动函数 - 正弦缓动，最自然的运动
         easeInOutSine(t) {
             return -(Math.cos(Math.PI * t) - 1) / 2;
         }
         
-        // 指数缓出 - 像羽毛一样飘落
         easeOutExpo(t) {
             return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
         }
         
-        // 清理
         cleanup() {
             if (this.animationFrameId) {
                 cancelAnimationFrame(this.animationFrameId);
@@ -374,7 +298,6 @@
         }
     }
     
-    // 页面加载后初始化
     let dandelionManager;
     
     function init() {
@@ -388,7 +311,6 @@
         init();
     }
     
-    // 窗口调整
     window.addEventListener('resize', function() {
         if (dandelionManager) {
             dandelionManager.cleanup();
@@ -398,7 +320,6 @@
         }
     });
     
-    // 页面可见性变化
     document.addEventListener('visibilitychange', function() {
         if (dandelionManager) {
             if (document.hidden) {
@@ -423,7 +344,6 @@
     </audio>
     
     <script>
-    // 音乐控制逻辑
     document.addEventListener('DOMContentLoaded', function() {
         const bgMusic = document.getElementById('bg-music');
         
@@ -433,8 +353,8 @@
             
             function playMusic() {
                 if (bgMusic) {
-                    bgMusic.volume = 0.2;
-                    bgMusic.playbackRate = 0.9; // 稍慢的音乐速度
+                    bgMusic.volume = 0.3;
+                    bgMusic.playbackRate = 0.9;
                     bgMusic.play().catch(function(error) {
                         console.log('音乐自动播放被阻止:', error);
                         document.body.addEventListener('click', function() {
