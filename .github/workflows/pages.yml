@@ -1,0 +1,46 @@
+name: Deploy Hexo to Pages
+
+on:
+  push:
+    branches: [ "main" ] # 当推送到 main 分支时触发
+  workflow_dispatch:      # 允许手动触发
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20" # 使用 Node.js 20 版本
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build with Hexo
+        run: npx hexo generate # 生成静态文件
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public # 上传生成的 public 文件夹
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

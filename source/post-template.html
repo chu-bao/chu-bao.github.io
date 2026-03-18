@@ -1,0 +1,610 @@
+---
+layout: false
+title: 文章模板
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="dynamic-title">文章 · SYLVIE</title>
+    
+    <style>
+    @font-face {
+    font-family: 'WK-M';
+    src: url('/font/WK-M.woff') format('woff');
+    font-display: swap;
+}
+      /* 全局样式 - 深色背景（与blog-custom.html保持一致） */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            font-family:"Microsoft YaHei", "Helvetica", "Arial","PingFang SC", "Hei",sans-serif;
+            background-color: #282c34;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        /* 外层容器 - 深色背景 */
+        .page-wrapper {
+            background-color: #282c34;
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* ===== 深色主卡片容器 ===== */
+        .main-card {
+            width: 100%;
+            max-width: 800px;
+            background-color: #23272e;
+            padding: 40px 48px;
+            margin: 0 auto;
+        }
+
+        /* ===== 顶部区域 ===== */
+        .top-section {
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        /* 文章标题作为顶部显示 */
+.article-title-header {
+    font-size: 1rem;
+    font-weight: 550;
+    color: #d19a66;
+    text-align: left;
+    opacity: 0.95;
+    word-break: break-word;
+    line-height: 1.4;
+    margin-bottom: 0;  /* 改为0，由父容器控制间距 */
+}
+
+        /* 进度条容器 */
+        .progress-container {
+            width: 100%;
+            height: 3px;
+            background-color: #403e3e;
+            margin-bottom: 6px;
+        }
+
+        /* 进度条 - 动态宽度 */
+        .progress-bar {
+            height: 3px;
+            background-color: #d19a66;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        /* 导航菜单 */
+        .nav-menu {
+            display: flex;
+            gap: 24px;
+            margin: 0;
+            padding: 0;
+           margin-top: 6px; 
+  
+        }
+
+        .nav-link {
+            padding: 4px 0;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: #d19a66;
+        }
+
+        .nav-link.active {
+            color: #d19a66;
+            border-bottom-color: #d19a66;
+        }
+
+        /* ===== 文章头部 - 已移除浏览数和分割线 ===== */
+        .article-header {
+            display: none;
+        }
+
+        /* ===== 文章内容 ===== */
+        .post-content {
+    margin-top: 20px;
+    color: rgba(255, 255, 255, 0.9);
+    font-family:"WK-M","Microsoft YaHei", "Helvetica", "Arial", "Hei",sans-serif;
+    font-size: 0.95rem;
+    line-height: 2.2;
+}
+
+        .post-content h1,
+        .post-content h2,
+        .post-content h3,
+        .post-content h4 {
+            color: #d19a66;
+            margin: 1.5em 0 0.8em;
+            font-weight: 500;
+        }
+
+        .post-content p {
+            margin-bottom: 1.2em;
+            line-height: 1.8;
+        }
+
+        .post-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin: 1.5em 0;
+        }
+
+        .post-content blockquote {
+            margin: 1.5em 0;
+            padding: 1em 1.5em;
+            background-color: rgba(209, 154, 102, 0.1);
+            border-left: 4px solid #d19a66;
+            border-radius: 4px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .post-content code {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #d19a66;
+        }
+
+        .post-content pre {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 1em;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5em 0;
+        }
+
+        .post-content pre code {
+            background-color: transparent;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .post-content a {
+            color: #d19a66;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(209, 154, 102, 0.3);
+        }
+
+        .post-content a:hover {
+            color: #ff8c42;
+            border-bottom-color: #d19a66;
+        }
+
+        .post-content ul,
+        .post-content ol {
+            margin: 1em 0 1em 1.5em;
+        }
+
+        .post-content li {
+            margin-bottom: 0.5em;
+        }
+
+        /* 文章底部 - 分割线上方显示分类 */
+        .article-footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex !important;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            width: 100%;
+        }
+
+        /* 分类容器 - 左侧多个分类，共享一个图标 */
+        .category-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px 8px;
+        }
+
+        .category-icon-wrapper {
+            display: flex;
+            align-items: center;
+            margin-right: 4px;
+        }
+
+        .category-icon {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            opacity: 0.9;
+        }
+
+        .category-item {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .category-link {
+            color: #d19a66 !important;
+            font-size: 0.9rem !important;
+            font-weight: 500 !important;
+            text-decoration: none;
+            padding: 2px 8px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .category-link:hover {
+            background-color: rgba(209, 154, 102, 0.2);
+            color: #ff8c42 !important;
+        }
+
+        .category-separator {
+            color: rgba(255, 255, 255, 0.3);
+            margin: 0 2px;
+        }
+
+        /* 标签样式 - 放在右侧 */
+        .post-tags {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .tag-item:hover {
+            background-color: #d19a66;
+            color: #000000;
+        }
+
+        /* 加载状态 */
+        .loading-state, .error-state {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+        }
+
+        .error-state {
+            color: #ff6b6b;
+        }
+        
+        /* Giscus 评论容器样式 - 已移除上边框和内边距 */
+        .giscus-wrapper {
+            margin-top: 30px;
+            width: 100%;
+            min-height: 200px;
+        }
+        
+        /* ===== Giscus 评论框自定义样式 - 修正版 ===== */
+
+        /* 发表评论按钮 */
+        .giscus-wrapper .btn-primary,
+        .giscus-wrapper button.btn-primary {
+            background-color: #d19a66 !important;
+            border-color: #d19a66 !important;
+            color: #000000 !important;
+        }
+
+        .giscus-wrapper .btn-primary:hover:not(:disabled),
+        .giscus-wrapper button.btn-primary:hover:not(:disabled) {
+            background-color: #e0aa77 !important;
+            border-color: #e0aa77 !important;
+        }
+
+        /* 登录 GitHub 按钮 (如果有) */
+        .giscus-wrapper .btn-secondary,
+        .giscus-wrapper button.btn-secondary {
+            background-color: #403e3e !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .giscus-wrapper .btn-secondary:hover,
+        .giscus-wrapper button.btn-secondary:hover {
+            background-color: #4f4f4f !important;
+        }
+
+        /* 输入框焦点效果 */
+        .giscus-wrapper input:focus,
+        .giscus-wrapper textarea:focus,
+        .giscus-wrapper .giscus input:focus,
+        .giscus-wrapper .giscus textarea:focus {
+            border-color: #d19a66 !important;
+            box-shadow: 0 0 0 3px rgba(209, 154, 102, 0.2) !important;
+        }
+        .post-content img {
+    border-radius: 0 !important;  /* 移除圆角 */
+}
+
+/* 确保图片居中 - 如果你想让所有图片默认居中 */
+.post-content {
+    text-align: center;
+}
+
+.post-content p {
+    text-align: left;  /* 段落文字保持左对齐 */
+}
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .page-wrapper {
+                padding: 20px 16px;
+            }
+            .main-card {
+                padding: 28px 24px;
+            }
+            .nav-menu {
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+            .article-title-header {
+                font-size: 1rem;
+            }
+            .article-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 深色背景容器 -->
+    <div class="page-wrapper">
+        <!-- 深色主卡片 -->
+        <div class="main-card">
+            <!-- 顶部区域：文章标题 + 进度条 + 导航 -->
+            <div class="top-section">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <img src="/images/头像2.png" alt="logo" style="width: 28px; height: 28px; object-fit: cover; border-radius: 4px;">
+                    <div class="article-title-header" id="articleTitle">加载中...</div>
+                </div>
+                
+                <!-- 进度条 -->
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+
+                <!-- 导航菜单 -->
+                <div class="nav-menu">
+                    <a href="/" class="nav-link">首页</a>
+                    <a href="/blog-custom.html" class="nav-link">博客</a>
+                    <a href="/categories/" class="nav-link">分类</a>
+                </div>
+            </div>
+
+            <!-- 文章内容容器 -->
+            <div id="post-container">
+                <div class="loading-state">📖 加载文章中...</div>
+            </div>
+            
+            <!-- Giscus 评论容器 - 初始为空，由 JS 动态填充 -->
+            <div class="giscus-wrapper" id="giscus-wrapper"></div>
+        </div>
+    </div>
+
+    <script>
+    // ===== 阅读进度条功能 =====
+    window.addEventListener('scroll', function() {
+        const winScroll = document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById('progressBar').style.width = scrolled + '%';
+    });
+
+    // ===== 核心：从URL获取文章路径，从content.json加载数据 =====
+    (function() {
+        const container = document.getElementById('post-container');
+        const titleElement = document.getElementById('articleTitle');
+        const giscusWrapper = document.getElementById('giscus-wrapper');
+        
+        // 1. 获取当前文章的路径
+        const urlParams = new URLSearchParams(window.location.search);
+        const postPath = urlParams.get('path');
+        
+        if (!postPath) {
+            container.innerHTML = `
+                <div class="error-state">
+                    ⚠️ 未指定文章路径<br>
+                    <span style="font-size: 0.9rem;">请使用 ?path=/文章/路径/ 访问</span>
+                </div>
+            `;
+            titleElement.textContent = '未指定文章路径';
+            return;
+        }
+        
+        // 2. 请求content.json
+        fetch('/content.json?t=' + Date.now())
+            .then(res => res.json())
+            .then(data => {
+                let posts = Array.isArray(data) ? data : (data.posts || []);
+                
+                // 获取URL中的文章路径
+                const urlPath = new URLSearchParams(window.location.search).get('path');
+                
+                if (!urlPath) {
+                    throw new Error('未指定文章路径');
+                }
+                
+                // 智能匹配文章
+                let post = null;
+                
+                // 1. 精确匹配路径
+                post = posts.find(p => p.path === urlPath || '/' + p.path === urlPath);
+                
+                // 2. 按文件名匹配
+                if (!post) {
+                    const urlFileName = urlPath.split('/').filter(Boolean).pop()?.replace(/\.html$/, '');
+                    post = posts.find(p => {
+                        const pFileName = p.path.split('/').filter(Boolean).pop()?.replace(/\.html$/, '');
+                        return pFileName === urlFileName;
+                    });
+                }
+                
+                if (!post) {
+                    container.innerHTML = `
+                        <div class="error-state">
+                            <h3>❌ 未找到文章</h3>
+                            <p>路径: ${urlPath}</p>
+                        </div>
+                    `;
+                    titleElement.textContent = '未找到文章';
+                    return;
+                }
+                
+                // 找到文章，渲染页面
+                document.title = `${post.title} · SYLVIE`;
+                titleElement.textContent = post.title;
+                
+                // ===== 动态设置 Giscus 评论 - 使用 createElement 方式 =====
+                const term = post.path.replace(/^\//, ''); // 去掉开头的斜杠
+                
+                // 清空容器
+                giscusWrapper.innerHTML = '';
+                
+                // 创建一个新的 script 元素
+                const script = document.createElement('script');
+                script.src = 'https://giscus.app/client.js';
+                script.setAttribute('data-repo', 'chu-bao/my-blog-comments');
+                script.setAttribute('data-repo-id', 'R_kgDORd4YvQ');
+                script.setAttribute('data-category', 'Announcements');
+                script.setAttribute('data-category-id', 'DIC_kwDORd4Yvc4C3pC6');
+                script.setAttribute('data-mapping', 'specific');
+                script.setAttribute('data-term', term);
+                script.setAttribute('data-strict', '1');
+                script.setAttribute('data-reactions-enabled', '0');
+                script.setAttribute('data-emit-metadata', '0');
+                script.setAttribute('data-input-position', 'bottom');
+                script.setAttribute('data-theme', 'dark_dimmed');
+                script.setAttribute('data-lang', 'zh-CN');
+                script.setAttribute('crossorigin', 'anonymous');
+                script.async = true;
+                
+                // 添加到容器中
+                giscusWrapper.appendChild(script);
+                
+                // 格式化日期（只用于内部，不显示）
+                let dateStr = '日期未知';
+                try {
+                    const d = new Date(post.date);
+                    dateStr = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+                } catch(e) {}
+                
+                // 获取标签
+                let tags = [];
+                if (post.tags) {
+                    tags = post.tags.map(t => t.name || t);
+                }
+                
+                // 获取内容
+                let content = post.content || '<p>暂无文章内容</p>';
+                
+                // 生成标签HTML
+                let tagsHtml = '';
+                if (tags.length > 0) {
+                    tagsHtml = tags.map(tag => 
+                        `<span class="tag-item">#${tag}</span>`
+                    ).join('');
+                }
+
+                // ===== 生成分类HTML - 共享一个图标 =====
+                let categoryHtml = '';
+                if (post.categories && post.categories.length > 0) {
+                    console.log('所有分类:', post.categories);
+                    
+                    // 遍历所有分类，生成分类链接
+                    const categoryLinks = post.categories.map((cat, index) => {
+                        // 获取分类名称 - 兼容各种格式
+                        let catName = '';
+                        if (typeof cat === 'string') {
+                            catName = cat;
+                        } else if (cat && typeof cat === 'object') {
+                            catName = cat.name || cat.slug || '';
+                        }
+                        
+                        if (!catName) return '';
+                        
+                        const encodedCategory = encodeURIComponent(catName);
+                        return `
+                            <span class="category-item">
+                                <a href="/categories/?cat=${encodedCategory}" class="category-link">${catName}</a>
+                                ${index < post.categories.length - 1 ? '<span class="category-separator">·</span>' : ''}
+                            </span>
+                        `;
+                    }).join('');
+                    
+                    if (categoryLinks) {
+                        categoryHtml = `
+                            <div class="category-container">
+                                <span class="category-icon-wrapper">
+                                    <img src="/images/label.png" alt="分类" class="category-icon">
+                                </span>
+                                ${categoryLinks}
+                            </div>
+                        `;
+                    }
+                    
+                    console.log('生成的分类HTML:', categoryHtml);
+                }
+                
+                // 渲染文章内容 - 只包含文章内容
+                container.innerHTML = `
+                    <article>
+                        <div class="post-content">
+                            ${content}
+                        </div>
+                        
+                        <footer class="article-footer">
+                            ${categoryHtml}
+                            <div class="post-tags">
+                                ${tagsHtml}
+                            </div>
+                        </footer>
+                    </article>
+                `;
+                
+                // 渲染完成后检查
+                setTimeout(() => {
+                    console.log('分类元素数量:', document.querySelectorAll('.category-link').length);
+                }, 500);
+            })
+            .catch(error => {
+                console.error('加载失败:', error);
+                container.innerHTML = `
+                    <div class="error-state">
+                        <h3>⚠️ 加载失败</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                titleElement.textContent = '加载失败';
+            }); 
+    })();
+</script>
+</body>
+</html>

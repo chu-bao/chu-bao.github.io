@@ -1,0 +1,326 @@
+---
+layout: false
+title: 留言板
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>留言 · SYLVIE's Blog</title>
+    
+    <!-- 引入 Lottie 库用于渲染 JSON 动画 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    
+    <style>
+        /* 全局样式 - 与博客列表页保持一致 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            font-family: "Microsoft YaHei", "Helvetica", "Arial", "PingFang SC", "Hei", sans-serif;
+            background-color: #282c34;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        .page-wrapper {
+            background-color: #282c34;
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .main-card {
+            width: 100%;
+            max-width: 800px;
+            background-color: #23272e;
+            padding: 40px 48px;
+            margin: 0 auto;
+        }
+
+        .top-section {
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .site-title {
+            font-size: 1.0rem;
+            font-weight: 150;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-align: left;
+            opacity: 0.95;
+            display: flex;
+            align-items: center;
+        }
+
+        .site-title .lottie-container {
+            width: 38px;
+            height: 38px;
+            margin-right: 6px;
+            display: block;
+            background-color: transparent;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 3px;
+            background-color: #403e3e;
+            margin-bottom: 16px;
+        }
+
+        .progress-bar {
+            height: 3px;
+            background-color: #d19a66;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 24px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            padding: 4px 0;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            font-weight: 650;
+            transition: all 0.2s ease;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid transparent;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #d19a66;
+            border-bottom-color: #d19a66;
+        }
+
+        /* 留言板标题 */
+        .guestbook-header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .guestbook-title {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #d19a66;
+            margin-bottom: 8px;
+        }
+
+        .guestbook-desc {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* ===== Giscus 评论样式 - 与 post-template.html 保持一致 ===== */
+        .giscus-wrapper {
+            margin-top: 30px;
+            width: 100%;
+            min-height: 400px;
+        }
+
+        /* 发表评论按钮 */
+        .giscus-wrapper .btn-primary,
+        .giscus-wrapper button.btn-primary {
+            background-color: #d19a66 !important;
+            border-color: #d19a66 !important;
+            color: #000000 !important;
+        }
+
+        .giscus-wrapper .btn-primary:hover:not(:disabled),
+        .giscus-wrapper button.btn-primary:hover:not(:disabled) {
+            background-color: #e0aa77 !important;
+            border-color: #e0aa77 !important;
+        }
+
+        /* 登录 GitHub 按钮 */
+        .giscus-wrapper .btn-secondary,
+        .giscus-wrapper button.btn-secondary {
+            background-color: #403e3e !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .giscus-wrapper .btn-secondary:hover,
+        .giscus-wrapper button.btn-secondary:hover {
+            background-color: #4f4f4f !important;
+        }
+
+        /* 输入框焦点效果 */
+        .giscus-wrapper input:focus,
+        .giscus-wrapper textarea:focus,
+        .giscus-wrapper .giscus input:focus,
+        .giscus-wrapper .giscus textarea:focus {
+            border-color: #d19a66 !important;
+            box-shadow: 0 0 0 3px rgba(209, 154, 102, 0.2) !important;
+        }
+
+        /* 加载状态提示 */
+        .loading-indicator {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .page-wrapper {
+                padding: 20px 16px;
+            }
+            .main-card {
+                padding: 28px 24px;
+            }
+            .nav-menu {
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+            .guestbook-title {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="main-card">
+            <!-- 顶部区域 -->
+            <div class="top-section">
+                <div class="site-title">
+                    <div id="lottie-animation" class="lottie-container"></div>
+                    SYLVIE's Blog
+                </div>
+                
+                <!-- 进度条容器 -->
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+
+                <div class="nav-menu">
+                    <a href="/" class="nav-link">首页</a>
+                    <a href="/blog-custom.html" class="nav-link">日志</a>
+                    <a href="/categories/" class="nav-link">分类</a>
+                    <a href="/guestbook.html" class="nav-link active">留言</a>
+                </div>
+            </div>
+
+            <!-- 留言板内容 -->
+            <div class="guestbook-header">
+                <h1 class="guestbook-title">留言板</h1>
+                <p class="guestbook-desc">欢迎留下你的想法和建议，一起交流分享</p>
+            </div>
+
+            <!-- Giscus 留言板容器 - 使用 createElement 方式动态加载，与 post-template.html 保持一致 -->
+            <div class="giscus-wrapper" id="giscus-wrapper">
+                <div id="loading-message" class="loading-indicator">加载留言板中...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== 阅读进度条 =====
+        window.addEventListener('scroll', function() {
+            const winScroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // ===== 加载 Lottie 动画 =====
+        function loadLottieAnimation() {
+            const animationContainer = document.getElementById('lottie-animation');
+            
+            if (typeof lottie === 'undefined') {
+                console.error('Lottie 库加载失败');
+                animationContainer.style.backgroundColor = '#d19a66';
+                animationContainer.style.borderRadius = '4px';
+                return;
+            }
+
+            fetch('/images/message.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('JSON 文件不存在');
+                    }
+                    return response.json();
+                })
+                .then(animationData => {
+                    animationContainer.innerHTML = '';
+                    
+                    lottie.loadAnimation({
+                        container: animationContainer,
+                        renderer: 'svg',
+                        loop: true,
+                        autoplay: true,
+                        animationData: animationData
+                    });
+                    
+                    console.log('Lottie 动画加载成功');
+                })
+                .catch(error => {
+                    console.error('动画加载失败:', error);
+                    animationContainer.style.backgroundColor = '#d19a66';
+                    animationContainer.style.borderRadius = '4px';
+                });
+        }
+
+        // ===== 动态加载 Giscus 评论 =====
+        function loadGiscus() {
+            const giscusWrapper = document.getElementById('giscus-wrapper');
+            const loadingEl = document.getElementById('loading-message');
+            
+            // 清空容器
+            giscusWrapper.innerHTML = '';
+            
+            // 创建一个新的 script 元素 - 与 post-template.html 完全相同的方式
+            const script = document.createElement('script');
+            script.src = 'https://giscus.app/client.js';
+            
+            // 使用与 post-template.html 完全相同的配置
+            script.setAttribute('data-repo', 'chu-bao/my-blog-comments');  // 你的评论仓库
+            script.setAttribute('data-repo-id', 'R_kgDORd4YvQ');           // 你的仓库ID
+            script.setAttribute('data-category', 'Announcements');
+            script.setAttribute('data-category-id', 'DIC_kwDORd4Yvc4C3pC6'); // 你的分类ID
+            script.setAttribute('data-mapping', 'specific');
+            script.setAttribute('data-term', 'Guestbook');  // 固定为 Guestbook，所有留言集中在这里
+            script.setAttribute('data-strict', '1');
+            script.setAttribute('data-reactions-enabled', '0');
+            script.setAttribute('data-emit-metadata', '0');
+            script.setAttribute('data-input-position', 'bottom');  // 与 post-template 一致
+            script.setAttribute('data-theme', 'dark_dimmed');       // 深色主题
+            script.setAttribute('data-lang', 'zh-CN');
+            script.setAttribute('crossorigin', 'anonymous');
+            script.async = true;
+            
+            // 添加到容器中
+            giscusWrapper.appendChild(script);
+            
+            console.log('Giscus 留言板加载中...');
+        }
+
+        // ===== 页面初始化 =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载 Lottie 动画
+            loadLottieAnimation();
+            
+            // 加载 Giscus 留言板
+            loadGiscus();
+        });
+    </script>
+</body>
+</html>
