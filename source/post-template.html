@@ -128,14 +128,14 @@ title: 文章模板
     line-height: 2.2;
 }
 
-        .post-content h1,
-        .post-content h2,
-        .post-content h3,
-        .post-content h4 {
-            color: #d19a66;
-            margin: 1.5em 0 0.8em;
-            font-weight: 500;
-        }
+       :where(.post-content) h1,
+:where(.post-content) h2,
+:where(.post-content) h3,
+:where(.post-content) h4 {
+    color: #d19a66;
+    margin: 1.5em 0 0.8em;
+    font-weight: 500;
+}
 
         .post-content p {
             margin-bottom: 1.2em;
