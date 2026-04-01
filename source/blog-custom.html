@@ -297,13 +297,13 @@ function timeAgo(dateString) {
 }
 
 // ===== 获取文章阅读数（从 HITS 徽章中提取数字）=====
-async function getPostViews(postId) {
+async function getPostViews(simpleId) {
     try {
-        // 使用提供 JSON 接口的服务
-        const url = `https://visitor-badge.glitch.me/json?page_id=${encodeURIComponent(postId)}`;
+        // 使用 count.chiya.dev 服务，它支持跨域，稳定且返回纯数字
+        const url = `https://count.chiya.dev/api/count/${encodeURIComponent(simpleId)}`;
         const response = await fetch(url);
         const data = await response.json();
-        // 服务返回格式为 { "page_id": "...", "value": 123 }
+        // 服务返回格式: { "status": "success", "value": 123 }
         return data.value || 0;
     } catch (error) {
         console.error('获取阅读数失败:', error);
@@ -325,14 +325,15 @@ async function fetchAllViews() {
     
     const postItems = document.querySelectorAll('.post-item');
     for (const item of postItems) {
-        const postId = item.getAttribute('data-post-id');
-        if (!postId) continue;
+        // 【修改】直接读取简化后的 ID
+        const simpleId = item.getAttribute('data-post-id');
+        if (!simpleId) continue;
         
-        const elementId = `views-${postId.replace(/[^a-zA-Z0-9]/g, '_')}`;
+        const elementId = `views-${simpleId.replace(/[^a-zA-Z0-9]/g, '_')}`;
         const viewsSpan = document.getElementById(elementId);
         if (!viewsSpan) continue;
         
-        const views = await getPostViews(postId);
+        const views = await getPostViews(simpleId);
         if (views !== null) {
             viewsSpan.innerHTML = `<span class="views-number">${views}</span> 阅读`;
         } else {
@@ -363,35 +364,37 @@ async function fetchAllViews() {
             posts.sort((a, b) => new Date(b.date) - new Date(a.date));
             
             let html = '';
-            posts.forEach((post) => {
-                const relativeDate = timeAgo(post.date);   
-                const postPath = post.path.startsWith('/') ? post.path : '/' + post.path;
-                const link = `/post-template.html?path=${encodeURIComponent(postPath)}`;
-                const thumbnail = post.thumbnail || '/images/default-post.jpg';
-                // 本地开发时使用线上域名，线上也使用线上域名
-const baseUrl = window.location.hostname === 'localhost' ? 'https://sylvie-cc.top' : window.location.origin;
-const postId = encodeURIComponent(`${baseUrl}${postPath}`);
-                const uniqueId = postId.replace(/[^a-zA-Z0-9]/g, '_');
-                
-                html += `
-                    <div class="post-item" data-post-id="${postId}">
-                        <div class="post-image">
-                            <img src="${thumbnail}" alt="${post.title}" loading="lazy">
-                        </div>
-                        <div class="post-content">
-                            <div class="post-title-row">
-                                <a href="${link}" class="post-title">${post.title || '无标题'}</a>
-                                <span class="post-views" id="views-${uniqueId}">
-                                    <span class="views-number">--</span> 阅读
-                                </span>
-                            </div>
-                            <div class="post-footer">
-                                <span class="post-date">${relativeDate}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
+           posts.forEach((post) => {
+    const relativeDate = timeAgo(post.date);   
+    const postPath = post.path.startsWith('/') ? post.path : '/' + post.path;
+    const link = `/post-template.html?path=${encodeURIComponent(postPath)}`;
+    const thumbnail = post.thumbnail || '/images/default-post.jpg';
+    
+    // 【修改1】生成一个简化的、唯一的文章 ID，例如：posts/why-consumerism-harms
+    const simpleId = postPath.replace(/^\//, '').replace(/\.md$/, '').replace(/\.html$/, '');
+    
+    // 【修改2】阅读数徽章的 id 也用这个简化 ID 生成
+    const uniqueId = simpleId.replace(/[^a-zA-Z0-9]/g, '_');
+    
+    html += `
+        <div class="post-item" data-post-id="${simpleId}">
+            <div class="post-image">
+                <img src="${thumbnail}" alt="${post.title}" loading="lazy">
+            </div>
+            <div class="post-content">
+                <div class="post-title-row">
+                    <a href="${link}" class="post-title">${post.title || '无标题'}</a>
+                    <span class="post-views" id="views-${uniqueId}">
+                        <span class="views-number">--</span> 阅读
+                    </span>
+                </div>
+                <div class="post-footer">
+                    <span class="post-date">${relativeDate}</span>
+                </div>
+            </div>
+        </div>
+    `;
+});
             
             container.innerHTML = html;
             fetchAllViews();
