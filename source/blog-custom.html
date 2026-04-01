@@ -160,7 +160,7 @@ title: 博客
             padding: 2px 0;
         }
 
-        /* 标题行 - 标题单独一行 */
+        /* 标题行 - 标题单独一行，去掉右侧空间 */
         .post-title-row {
             display: flex;
             align-items: center;
@@ -170,7 +170,7 @@ title: 博客
 
         /* 标题 */
         .post-title {
-            font-size: 0.95rem;
+            font-size: 0.8rem;
             font-weight: 550;
             color: #d19a66;
             text-decoration: none;
@@ -232,16 +232,17 @@ title: 博客
                 height: 48px;
             }
             .post-title {
-                font-size: 0.9rem;
+                font-size: 0.95rem;
             }
         }
     </style>
-    <!-- 引入不蒜子统计脚本 -->
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 </head>
 <body>
+    <!-- 深色背景容器 -->
     <div class="page-wrapper">
         <div class="main-card">
+            <!-- 顶部区域保持不变 -->
             <div class="top-section">
                 <div class="site-title">
                     <img src="/images/头像1.png" alt="logo" class="site-logo-img">
@@ -260,25 +261,23 @@ title: 博客
                 </div>
             </div>
 
+            <!-- 文章列表容器 -->
             <main class="posts-list" id="posts-container">
                 <div class="loading-state">📚 加载文章中...</div>
             </main>
-
-            <!-- 不蒜子统计 - 全站总访问量 -->
-            <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; color: rgba(255,255,255,0.5);">
-                📊 本站总访问量：<span id="busuanzi_value_site_pv">0</span> 次
-            </div>
         </div>
     </div>
-
+<!-- 不蒜子统计 - 全站总访问量 -->
+<div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; color: rgba(255,255,255,0.5);">
+    📊 本站总访问量：<span id="busuanzi_value_site_pv">0</span> 次
+</div>
     <script>
 // ===== 阅读进度条功能 =====
 window.addEventListener('scroll', function() {
     const winScroll = document.documentElement.scrollTop;
     const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     const scrolled = (winScroll / height) * 100;
-    const progressBar = document.getElementById('progressBar');
-    if (progressBar) progressBar.style.width = scrolled + '%';
+    document.getElementById('progressBar').style.width = scrolled + '%';
 });
 
 // ===== 相对时间格式化函数 =====
@@ -295,19 +294,15 @@ function timeAgo(dateString) {
         if (years > 0) return years + '年前';
         if (months > 0) return months + '个月前';
         if (days > 0) return days + '天前';
-        if (hours > 0) return hours + '小时前';
-        if (minutes > 0) return minutes + '分钟前';
-        return '刚刚';
+        return '今日';
     } catch(e) {
         return '日期未知';
     }
 }
 
-// ===== 文章加载功能（简化版）=====
+// ===== 文章加载功能 =====
 (function() {
     const container = document.getElementById('posts-container');
-    if (!container) return;
-    
     container.innerHTML = '<div class="loading-state">📚 加载文章中...</div>';
     
     fetch('/content.json?t=' + Date.now())
@@ -316,6 +311,8 @@ function timeAgo(dateString) {
             return response.json();
         })
         .then(data => {
+            console.log('content.json 加载成功，文章数量:', data.length);
+            
             let posts = Array.isArray(data) ? data : (data.posts || []);
             
             if (posts.length === 0) {
@@ -335,11 +332,11 @@ function timeAgo(dateString) {
                 html += `
                     <div class="post-item">
                         <div class="post-image">
-                            <img src="${thumbnail}" alt="${post.title}" loading="lazy" onerror="this.src='/images/default-post.jpg'">
+                            <img src="${thumbnail}" alt="${post.title}" loading="lazy">
                         </div>
                         <div class="post-content">
                             <div class="post-title-row">
-                                <a href="${link}" class="post-title">${escapeHtml(post.title) || '无标题'}</a>
+                                <a href="${link}" class="post-title">${post.title || '无标题'}</a>
                             </div>
                             <div class="post-footer">
                                 <span class="post-date">${relativeDate}</span>
@@ -363,16 +360,6 @@ function timeAgo(dateString) {
             `;
         });
 })();
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
 </script>
 </body>
 </html>
