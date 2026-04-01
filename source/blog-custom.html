@@ -289,6 +289,7 @@ title: 博客
     </div>
 
     <script>
+<script>
 // ===== 阅读进度条功能 =====
 window.addEventListener('scroll', function() {
     const winScroll = document.documentElement.scrollTop;
@@ -320,6 +321,28 @@ function timeAgo(dateString) {
     }
 }
 
+// ===== 获取单篇文章阅读数（调用不蒜子 JSON API）=====
+async function getPageViews(pageUrl) {
+    try {
+        // 不蒜子 JSON API 格式：https://busuanzi.ibruce.info/busuanzi?jsonpCallback=xxx&path=页面路径
+        // 使用 fetch 获取 JSONP 数据
+        const apiUrl = `https://busuanzi.ibruce.info/busuanzi?path=${encodeURIComponent(pageUrl)}`;
+        const response = await fetch(apiUrl);
+        const text = await response.text();
+        // 返回的是 JSONP 格式：try{callback({...})}catch(e){}
+        const jsonMatch = text.match(/\(\{.*\}\)/);
+        if (jsonMatch) {
+            const jsonStr = jsonMatch[0].slice(1, -1);
+            const data = JSON.parse(jsonStr);
+            return data.page_pv || 0;
+        }
+        return 0;
+    } catch (error) {
+        console.error('获取阅读数失败:', pageUrl, error);
+        return null;
+    }
+}
+
 // ===== 文章加载功能 =====
 (function() {
     const container = document.getElementById('posts-container');
@@ -332,7 +355,7 @@ function timeAgo(dateString) {
             if (!response.ok) throw new Error('content.json 不存在');
             return response.json();
         })
-        .then(data => {
+        .then(async (data) => {
             let posts = Array.isArray(data) ? data : (data.posts || []);
             
             if (posts.length === 0) {
@@ -342,19 +365,17 @@ function timeAgo(dateString) {
             
             posts.sort((a, b) => new Date(b.date) - new Date(a.date));
             
+            // 先渲染 HTML，阅读数暂时显示 0
             let html = '';
-            posts.forEach((post) => {
-                const relativeDate = timeAgo(post.date);   
+            const postsWithPath = posts.map(post => {
                 const postPath = post.path.startsWith('/') ? post.path : '/' + post.path;
+                const relativeDate = timeAgo(post.date);
                 const link = `/post-template.html?path=${encodeURIComponent(postPath)}`;
                 const thumbnail = post.thumbnail || '/images/default-post.jpg';
-                
-                // 生成不蒜子专用的页面标识
-                let simpleId = postPath.replace(/^\//, '').replace(/\.html$/, '').replace(/\.md$/, '');
-                const pageKey = simpleId.replace(/\//g, '_');
+                const pageKey = postPath.replace(/^\//, '').replace(/\.html$/, '').replace(/\.md$/, '').replace(/\//g, '_');
                 
                 html += `
-                    <div class="post-item">
+                    <div class="post-item" data-page-path="${encodeURIComponent(postPath)}">
                         <div class="post-image">
                             <img src="${thumbnail}" alt="${post.title}" loading="lazy" onerror="this.src='/images/default-post.jpg'">
                         </div>
@@ -362,9 +383,7 @@ function timeAgo(dateString) {
                             <div class="post-title-row">
                                 <a href="${link}" class="post-title">${escapeHtml(post.title) || '无标题'}</a>
                                 <span class="post-views">
-                                    <span class="views-number">
-                                        <span id="busuanzi_value_page_${pageKey}">0</span>
-                                    </span> 阅读
+                                    <span class="views-number" id="views-${pageKey}">0</span> 阅读
                                 </span>
                             </div>
                             <div class="post-footer">
@@ -373,24 +392,28 @@ function timeAgo(dateString) {
                         </div>
                     </div>
                 `;
+                return { post, postPath, pageKey };
             });
             
             container.innerHTML = html;
-            // 强制等待不蒜子加载完成后，刷新所有阅读数
-if (typeof busuanzi !== 'undefined') {
-    busuanzi.fetch();
-    console.log('已手动调用 busuanzi.fetch()');
-} else {
-    // 如果 busuanzi 还没加载好，等它加载完再调用
-    const checkBusuanzi = setInterval(() => {
-        if (typeof busuanzi !== 'undefined') {
-            clearInterval(checkBusuanzi);
-            busuanzi.fetch();
-            console.log('已手动调用 busuanzi.fetch()');
-        }
-    }, 200);
-}
-            console.log('文章列表渲染完成，等待不蒜子更新');
+            console.log('文章列表渲染完成，开始获取阅读数...');
+            
+            // 逐个获取每篇文章的阅读数
+            for (const item of postsWithPath) {
+                const { postPath, pageKey } = item;
+                const viewsSpan = document.getElementById(`views-${pageKey}`);
+                if (viewsSpan) {
+                    const views = await getPageViews(postPath);
+                    if (views !== null) {
+                        viewsSpan.textContent = views;
+                    } else {
+                        viewsSpan.textContent = '?';
+                    }
+                    // 添加延迟，避免请求过快
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                }
+            }
+            console.log('所有文章阅读数获取完成');
         })
         .catch(error => {
             console.error('加载失败:', error);
@@ -413,6 +436,7 @@ function escapeHtml(str) {
         return m;
     });
 }
+</script>
 </script>
 </body>
 </html>
