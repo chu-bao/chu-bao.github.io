@@ -376,6 +376,20 @@ function timeAgo(dateString) {
             });
             
             container.innerHTML = html;
+            // 强制等待不蒜子加载完成后，刷新所有阅读数
+if (typeof busuanzi !== 'undefined') {
+    busuanzi.fetch();
+    console.log('已手动调用 busuanzi.fetch()');
+} else {
+    // 如果 busuanzi 还没加载好，等它加载完再调用
+    const checkBusuanzi = setInterval(() => {
+        if (typeof busuanzi !== 'undefined') {
+            clearInterval(checkBusuanzi);
+            busuanzi.fetch();
+            console.log('已手动调用 busuanzi.fetch()');
+        }
+    }, 200);
+}
             console.log('文章列表渲染完成，等待不蒜子更新');
         })
         .catch(error => {
