@@ -255,8 +255,8 @@ title: 博客
             }
         }
     </style>
-    <!-- 引入 Vercount 统计脚本（不蒜子替代品） -->
-    <script defer src="https://events.vercount.one/js"></script>
+    <!-- 引入不蒜子统计脚本 -->
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 </head>
 <body>
     <!-- 深色背景容器 -->
@@ -320,7 +320,7 @@ function timeAgo(dateString) {
     }
 }
 
-// ===== 文章加载功能（使用 Vercount 统计）=====
+// ===== 文章加载功能 =====
 (function() {
     const container = document.getElementById('posts-container');
     if (!container) return;
@@ -340,7 +340,6 @@ function timeAgo(dateString) {
                 return;
             }
             
-            // 按日期排序
             posts.sort((a, b) => new Date(b.date) - new Date(a.date));
             
             let html = '';
@@ -350,12 +349,12 @@ function timeAgo(dateString) {
                 const link = `/post-template.html?path=${encodeURIComponent(postPath)}`;
                 const thumbnail = post.thumbnail || '/images/default-post.jpg';
                 
-                // 生成页面标识（Vercount 兼容不蒜子格式）
+                // 生成不蒜子专用的页面标识
                 let simpleId = postPath.replace(/^\//, '').replace(/\.html$/, '').replace(/\.md$/, '');
                 const pageKey = simpleId.replace(/\//g, '_');
                 
                 html += `
-                    <div class="post-item" data-post-key="${pageKey}">
+                    <div class="post-item">
                         <div class="post-image">
                             <img src="${thumbnail}" alt="${post.title}" loading="lazy" onerror="this.src='/images/default-post.jpg'">
                         </div>
@@ -377,30 +376,7 @@ function timeAgo(dateString) {
             });
             
             container.innerHTML = html;
-            
-            // 等待 Vercount 加载完成后刷新数据
-            let checkCount = 0;
-            const maxChecks = 20; // 最多等待10秒
-            
-            const waitForVercount = setInterval(() => {
-                if (typeof vercount !== 'undefined') {
-                    clearInterval(waitForVercount);
-                    // Vercount 会自动更新带有 busuanzi_value_page_xxx 的元素
-                    // 如果有手动刷新方法可以调用，但自动更新已足够
-                    console.log('Vercount 统计已加载');
-                } else if (checkCount >= maxChecks) {
-                    clearInterval(waitForVercount);
-                    console.warn('Vercount 加载超时，请检查网络');
-                    // 超时后显示提示
-                    const viewSpans = document.querySelectorAll('.post-views .views-number span');
-                    viewSpans.forEach(span => {
-                        if (span.innerText === '0') {
-                            span.innerText = '?';
-                        }
-                    });
-                }
-                checkCount++;
-            }, 500);
+            console.log('文章列表渲染完成，等待不蒜子更新');
         })
         .catch(error => {
             console.error('加载失败:', error);
@@ -414,7 +390,6 @@ function timeAgo(dateString) {
         });
 })();
 
-// 简单的防XSS辅助函数
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>]/g, function(m) {
@@ -422,8 +397,6 @@ function escapeHtml(str) {
         if (m === '<') return '&lt;';
         if (m === '>') return '&gt;';
         return m;
-    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-        return c;
     });
 }
 </script>
