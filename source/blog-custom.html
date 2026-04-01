@@ -312,6 +312,16 @@ async function getPostViews(postId) {
 
 // ===== 批量获取所有文章阅读数 =====
 async function fetchAllViews() {
+    // 本地预览时跳过，直接显示占位符
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        const viewsSpans = document.querySelectorAll('.post-views');
+        viewsSpans.forEach(span => {
+            span.innerHTML = `<span class="views-number">--</span> 阅读`;
+        });
+        console.log('本地预览模式，跳过阅读数获取');
+        return;
+    }
+    
     const postItems = document.querySelectorAll('.post-item');
     for (const item of postItems) {
         const postId = item.getAttribute('data-post-id');
