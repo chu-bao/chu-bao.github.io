@@ -290,6 +290,7 @@ title: 博客
 
     <script>
 <script>
+<script>
 // ===== 阅读进度条功能 =====
 window.addEventListener('scroll', function() {
     const winScroll = document.documentElement.scrollTop;
@@ -321,26 +322,26 @@ function timeAgo(dateString) {
     }
 }
 
-// ===== 获取单篇文章阅读数（调用不蒜子 JSON API）=====
-async function getPageViews(pageUrl) {
-    try {
-        // 不蒜子 JSON API 格式：https://busuanzi.ibruce.info/busuanzi?jsonpCallback=xxx&path=页面路径
-        // 使用 fetch 获取 JSONP 数据
-        const apiUrl = `https://busuanzi.ibruce.info/busuanzi?path=${encodeURIComponent(pageUrl)}`;
-        const response = await fetch(apiUrl);
-        const text = await response.text();
-        // 返回的是 JSONP 格式：try{callback({...})}catch(e){}
-        const jsonMatch = text.match(/\(\{.*\}\)/);
-        if (jsonMatch) {
-            const jsonStr = jsonMatch[0].slice(1, -1);
-            const data = JSON.parse(jsonStr);
-            return data.page_pv || 0;
-        }
-        return 0;
-    } catch (error) {
-        console.error('获取阅读数失败:', pageUrl, error);
-        return null;
-    }
+// ===== 获取单篇文章阅读数（不蒜子 JSONP API）=====
+function getPageViews(pageUrl) {
+    return new Promise((resolve) => {
+        const callbackName = 'busuanzi_callback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+        
+        window[callbackName] = function(data) {
+            delete window[callbackName];
+            if (script.parentNode) script.parentNode.removeChild(script);
+            resolve(data && data.page_pv ? data.page_pv : 0);
+        };
+        
+        const script = document.createElement('script');
+        script.src = `https://busuanzi.ibruce.info/busuanzi?callback=${callbackName}&path=${encodeURIComponent(pageUrl)}`;
+        script.onerror = function() {
+            delete window[callbackName];
+            if (script.parentNode) script.parentNode.removeChild(script);
+            resolve(0);
+        };
+        document.head.appendChild(script);
+    });
 }
 
 // ===== 文章加载功能 =====
@@ -367,7 +368,9 @@ async function getPageViews(pageUrl) {
             
             // 先渲染 HTML，阅读数暂时显示 0
             let html = '';
-            const postsWithPath = posts.map(post => {
+            const postsInfo = [];
+            
+            posts.forEach((post) => {
                 const postPath = post.path.startsWith('/') ? post.path : '/' + post.path;
                 const relativeDate = timeAgo(post.date);
                 const link = `/post-template.html?path=${encodeURIComponent(postPath)}`;
@@ -375,7 +378,7 @@ async function getPageViews(pageUrl) {
                 const pageKey = postPath.replace(/^\//, '').replace(/\.html$/, '').replace(/\.md$/, '').replace(/\//g, '_');
                 
                 html += `
-                    <div class="post-item" data-page-path="${encodeURIComponent(postPath)}">
+                    <div class="post-item">
                         <div class="post-image">
                             <img src="${thumbnail}" alt="${post.title}" loading="lazy" onerror="this.src='/images/default-post.jpg'">
                         </div>
@@ -392,23 +395,20 @@ async function getPageViews(pageUrl) {
                         </div>
                     </div>
                 `;
-                return { post, postPath, pageKey };
+                
+                postsInfo.push({ postPath, pageKey });
             });
             
             container.innerHTML = html;
             console.log('文章列表渲染完成，开始获取阅读数...');
             
             // 逐个获取每篇文章的阅读数
-            for (const item of postsWithPath) {
+            for (const item of postsInfo) {
                 const { postPath, pageKey } = item;
                 const viewsSpan = document.getElementById(`views-${pageKey}`);
                 if (viewsSpan) {
                     const views = await getPageViews(postPath);
-                    if (views !== null) {
-                        viewsSpan.textContent = views;
-                    } else {
-                        viewsSpan.textContent = '?';
-                    }
+                    viewsSpan.textContent = views;
                     // 添加延迟，避免请求过快
                     await new Promise(resolve => setTimeout(resolve, 200));
                 }
@@ -436,6 +436,7 @@ function escapeHtml(str) {
         return m;
     });
 }
+</script>
 </script>
 </script>
 </body>
