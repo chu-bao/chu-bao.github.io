@@ -255,8 +255,8 @@ title: 博客
             }
         }
     </style>
-    <!-- 引入不蒜子统计脚本 -->
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <!-- 引入 Vercount 统计脚本（不蒜子替代品） -->
+    <script defer src="https://events.vercount.one/js"></script>
 </head>
 <body>
     <!-- 深色背景容器 -->
@@ -320,7 +320,7 @@ function timeAgo(dateString) {
     }
 }
 
-// ===== 文章加载功能（使用不蒜子统计）=====
+// ===== 文章加载功能（使用 Vercount 统计）=====
 (function() {
     const container = document.getElementById('posts-container');
     if (!container) return;
@@ -350,9 +350,8 @@ function timeAgo(dateString) {
                 const link = `/post-template.html?path=${encodeURIComponent(postPath)}`;
                 const thumbnail = post.thumbnail || '/images/default-post.jpg';
                 
-                // 生成不蒜子专用的页面标识（只取文件名部分，避免特殊字符）
+                // 生成页面标识（Vercount 兼容不蒜子格式）
                 let simpleId = postPath.replace(/^\//, '').replace(/\.html$/, '').replace(/\.md$/, '');
-                // 替换路径分隔符为下划线，确保 busuanzi 能识别
                 const pageKey = simpleId.replace(/\//g, '_');
                 
                 html += `
@@ -379,20 +378,20 @@ function timeAgo(dateString) {
             
             container.innerHTML = html;
             
-            // 等待不蒜子加载完成后刷新数据
+            // 等待 Vercount 加载完成后刷新数据
             let checkCount = 0;
             const maxChecks = 20; // 最多等待10秒
             
-            const waitForBusuanzi = setInterval(() => {
-                if (typeof busuanzi !== 'undefined' && busuanzi.fetch) {
-                    clearInterval(waitForBusuanzi);
-                    // 调用 busuanzi 的 fetch 方法刷新所有统计数字
-                    busuanzi.fetch();
-                    console.log('不蒜子统计已加载');
+            const waitForVercount = setInterval(() => {
+                if (typeof vercount !== 'undefined') {
+                    clearInterval(waitForVercount);
+                    // Vercount 会自动更新带有 busuanzi_value_page_xxx 的元素
+                    // 如果有手动刷新方法可以调用，但自动更新已足够
+                    console.log('Vercount 统计已加载');
                 } else if (checkCount >= maxChecks) {
-                    clearInterval(waitForBusuanzi);
-                    console.warn('不蒜子加载超时，请检查网络');
-                    // 超时后显示提示（可选）
+                    clearInterval(waitForVercount);
+                    console.warn('Vercount 加载超时，请检查网络');
+                    // 超时后显示提示
                     const viewSpans = document.querySelectorAll('.post-views .views-number span');
                     viewSpans.forEach(span => {
                         if (span.innerText === '0') {
