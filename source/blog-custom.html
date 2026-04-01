@@ -299,11 +299,12 @@ function timeAgo(dateString) {
 // ===== 获取文章阅读数（从 HITS 徽章中提取数字）=====
 async function getPostViews(postId) {
     try {
-        const url = `https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=${postId}&count_bg=%23d19a66&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=views&edge_flat=false`;
+        // 使用提供 JSON 接口的服务
+        const url = `https://visitor-badge.glitch.me/json?page_id=${encodeURIComponent(postId)}`;
         const response = await fetch(url);
-        const svgText = await response.text();
-        const match = svgText.match(/<text[^>]*>(\d+)<\/text>/);
-        return match ? parseInt(match[1]) : 0;
+        const data = await response.json();
+        // 服务返回格式为 { "page_id": "...", "value": 123 }
+        return data.value || 0;
     } catch (error) {
         console.error('获取阅读数失败:', error);
         return null;
