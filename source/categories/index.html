@@ -10,11 +10,65 @@ title: 分类
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>分类 · SYLVIE</title>
     
-    <!-- 引入 Lottie 库用于渲染 JSON 动画 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-    
     <style>
-        /* 全局样式 - 深色背景 */
+        /* ========== CSS变量 - 与文章详情页完全一致 ========== */
+        :root {
+            /* 浅色模式 - 与post-template保持一致 */
+            --bg-body: #3171dc;
+            --bg-wrapper: #7db9de;
+            --bg-card: #ffffff;
+            --text-primary: #7db9de;
+            --text-secondary: #7db9de;
+            --text-muted: #7db9de;
+            --text-nav: #7db9de;
+            --border-color: #f2f4f8;
+            --accent-color: #808080;
+            --accent-hover: #b8864a;
+            --card-shadow: 0 2px 12px rgba(44, 62, 80, 0.06);
+            --loading-bg: rgba(44, 62, 80, 0.04);
+            --error-color: #c0392b;
+            --post-title: #2c3e50;
+            --post-title-hover: #1a2a3a;
+            --post-date: #7a8a9e;
+            --progress-bg: #f2f4f8;
+            --stat-text: #7a8a9e;
+            --site-title: #2c3e50;
+            --theme-border-color: rgba(44, 62, 80, 0.3);
+            --theme-hover-bg: rgba(128, 128, 128, 0.12);
+            --category-card-overlay: rgba(44, 62, 80, 0.15);
+            --category-card-text: #ffffff;
+            --post-border: rgba(44, 62, 80, 0.08);
+        }
+
+        /* 深色模式 - 与post-template保持一致 */
+        html.dark {
+            --bg-body: #1e2024;
+            --bg-wrapper: #1e2024;
+            --bg-card: #25282e;
+            --text-primary: #d4d8e0;
+            --text-secondary: #c0c6d0;
+            --text-muted: #a8b0be;
+            --text-nav: #d4d8e0;
+            --border-color: #3a3e45;
+            --accent-color: #d4d8e0;
+            --accent-hover: #e0aa77;
+            --card-shadow: none;
+            --loading-bg: rgba(255, 255, 255, 0.04);
+            --error-color: #ff6b6b;
+            --post-title: #d4d8e0;
+            --post-title-hover: #ffffff;
+            --post-date: #a8b0be;
+            --progress-bg: #3a3e45;
+            --stat-text: #a8b0be;
+            --site-title: #d4d8e0;
+            --theme-border-color: rgba(255, 255, 255, 0.25);
+            --theme-hover-bg: rgba(209, 154, 102, 0.15);
+            --category-card-overlay: rgba(0, 0, 0, 0.55);
+            --category-card-text: #ffffff;
+            --post-border: rgba(255, 255, 255, 0.06);
+        }
+
+        /* ========== 全局样式 ========== */
         * {
             margin: 0;
             padding: 0;
@@ -24,128 +78,185 @@ title: 分类
         html, body {
             height: 100%;
             font-family: "Helvetica Neue", "Helvetica", "Arial", "Hei", "Microsoft YaHei", "PingFang SC", sans-serif;
-            background-color: #282c34;
-            color: #ffffff;
-            line-height: 1.6;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.7;
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
         
-        /* 外层容器 - 深色背景 */
         .page-wrapper {
-            background-color: #282c34;
+            background-color: var(--bg-wrapper);
             min-height: 100vh;
             padding: 40px 20px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
+            transition: background-color 0.4s ease;
         }
 
-        /* ===== 深色主卡片容器 ===== */
         .main-card {
             width: 100%;
             max-width: 780px;
-            background-color: #23272e;
-            padding: 40px 48px;
+            background-color: var(--bg-card);
+            padding: 22px 48px;
             margin: 0 auto;
-            border-radius: 16px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
         }
 
-        /* ===== 顶部区域 ===== */
         .top-section {
-            margin-bottom: 32px;
+            margin-bottom: 8px;
+            position: relative;
         }
 
-        /* 站点名称 + 图标 - 保持原有布局不变 */
+        /* ===== 顶部行：站点标题 + 主题按钮 ===== */
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+             padding-top: 6px;
+            margin-bottom: 8px;
+            width: 100%;
+            gap: 12px;
+        }
+
         .site-title {
+            font-size: 1.0rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            color: var(--site-title);
+            text-align: left;
+            opacity: 0.95;
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-            margin-top: -10px;
-        }
-        
-        /* 修改：将 img 选择器改为 Lottie 容器，保持相同尺寸 */
-        .site-title .lottie-container {
-            width: 38px;
-            height: 38px;
-            display: block;
-            background-color: transparent;
-        }
-        
-        .site-title span {
-            font-size: 1rem;
-            font-weight: 150;
-            color: #ffffff;
-            opacity: 0.95;
-            margin-top: 10px;
+            transition: color 0.4s ease;
         }
 
-        /* 进度条 */
+        .site-title .title-icon {
+            width: 28px;
+            height: 28px;
+            margin-right: 6px;
+            flex-shrink: 0;
+            color: var(--site-title);
+        }
+
+        /* ===== 主题切换按钮 - 正方形虚线框 ===== */
+        #theme-toggle {
+            cursor: pointer;
+            user-select: none;
+            font-size: 1.0rem;
+            border: 1.5px dashed var(--theme-border-color);
+            background: none;
+            padding: 0;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            color: var(--text-nav);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 27px;
+            height: 27px;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        #theme-toggle:hover {
+            background-color: var(--theme-hover-bg);
+            border-color: var(--accent-color);
+            transform: scale(1.05);
+            color: var(--accent-color);
+        }
+
+        #theme-toggle:active {
+            transform: scale(0.92);
+        }
+
+        #theme-icon {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        #theme-toggle:hover #theme-icon {
+            transform: rotate(20deg);
+        }
+
         .progress-container {
             width: 100%;
-            height: 3px;
-            background-color: #403e3e;
-            margin-bottom: 16px;
+            height: 1.5px;
+            background-color: var(--progress-bg);
+            margin-bottom: 12px;
+            transition: background-color 0.4s ease;
         }
 
         .progress-bar {
-            height: 3px;
-            background-color: #d19a66;
+            height: 1.5px;
+            background-color: var(--accent-color);
             width: 0%;
             transition: width 0.1s ease;
         }
 
-        /* 导航菜单 */
+        /* ===== 导航菜单 ===== */
         .nav-menu {
             display: flex;
-            gap: 24px;
-            margin-bottom: 8px;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-link {
-            padding: 4px 0;
+            padding: 2px 0;
             text-decoration: none;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            color: var(--text-nav);
+            font-size: 0.97rem;
+            font-weight: 650;
+            transition: all 0.25s ease;
+            letter-spacing: 0.5px;
             border-bottom: 1px solid transparent;
         }
 
-        .nav-link:hover,
-        .nav-link.active {
-            color: #d19a66;
-            border-bottom-color: #d19a66;
+        .nav-link:hover {
+            color: var(--accent-color);
         }
 
-        /* ===== 分类卡片样式（完全不变） ===== */
+        .nav-link.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        /* ===== 分类卡片网格 ===== */
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px 8px;
+            gap: 12px;
+            margin-top: 4px;
         }
         
         @media (max-width: 768px) {
             .categories-grid {
                 grid-template-columns: 1fr;
+                gap: 10px;
             }
         }
 
-        /* 分类卡片基础样式 */
         .category-card {
             position: relative;
             border: none;
-            border-radius: 0;
+            border-radius: 10px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             background-size: cover;
             background-position: center;
-            height: 220px; 
+            height: 180px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
         
         .category-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(209, 154, 102, 0.3);
+            box-shadow: 0 8px 25px rgba(209, 154, 102, 0.25);
         }
 
         /* 每个分类不同的背景图片 */
@@ -167,19 +278,53 @@ title: 分类
         .category-card[data-category="测试"] {
             background-image: url('/images/study-bg.jpeg');
         }
-       .category-card[data-category="读书"] {
+        .category-card[data-category="读书"] {
             background-image: url('/images/读书.jpg');
         }
-        /* 卡片内容 */
-        .category-card > div {
-            position: relative;
-            z-index: 2;
+
+        .category-card .card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 18px;
+            background: linear-gradient(to top, var(--category-card-overlay) 0%, transparent 100%);
+            transition: background 0.3s ease;
         }
 
-        /* ===== 文章列表（完全不变） ===== */
+        .category-card:hover .card-content {
+            background: linear-gradient(to top, rgba(209, 154, 102, 0.3) 0%, transparent 100%);
+        }
+
+        .category-card .card-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--category-card-text);
+            display: block;
+            margin-bottom: 2px;
+            letter-spacing: 0.3px;
+        }
+
+        .category-card .card-count {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .category-card .card-preview {
+            font-size: 0.85rem;
+            color: #ffffff;
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        /* ===== 文章列表 ===== */
         .posts-list {
             list-style: none;
-            margin-top: 24px;
+            margin-top: 8px;
         }
 
         .post-item {
@@ -187,7 +332,8 @@ title: 分类
             align-items: center;
             padding: 10px 0;
             gap: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--post-border);
+            transition: border-color 0.3s ease;
         }
 
         .post-item:last-child {
@@ -199,8 +345,9 @@ title: 分类
             height: 50px;
             border-radius: 8px;
             overflow: hidden;
-            background-color: #f5f5f5;
+            background-color: var(--border-color);
             flex-shrink: 0;
+            transition: background-color 0.3s ease;
         }
 
         .post-image img {
@@ -222,16 +369,16 @@ title: 分类
         .post-title {
             font-size: 0.8rem;
             font-weight: 550;
-            color: #d19a66;
+            color: var(--post-title);
             text-decoration: none;
-            transition: color 0.2s ease;
+            transition: color 0.25s ease;
+            word-break: break-word;
             margin-bottom: 4px;
             line-height: 1.4;
-            word-break: break-word;
         }
 
         .post-title:hover {
-            color: #ffffff;
+            color: var(--post-title-hover);
         }
 
         .post-footer {
@@ -243,23 +390,13 @@ title: 分类
 
         .post-date {
             font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .post-meta {
-            display: flex;
-            align-items: center;
-        }
-
-        .post-meta #busuanzi_container_page_pv {
-            display: inline-block;
-            min-width: 30px;
-            text-align: center;
+            color: var(--post-date);
+            transition: color 0.3s ease;
         }
 
         .post-meta .busuanzi_value_page_pv {
             color: #000000;
-            background-color: #d19a66;
+            background-color: var(--accent-color);
             padding: 0px 8px;
             border-radius: 10px;
             font-size: 0.7rem;
@@ -268,21 +405,39 @@ title: 分类
             display: inline-block;
         }
 
-        /* 加载状态 */
+        /* ===== 返回分类列表链接 ===== */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 16px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent-hover);
+        }
+
+        /* ===== 加载/错误/空状态 ===== */
         .loading-state, .error-state, .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            background-color: rgba(255, 255, 255, 0.05);
+            padding: 40px 20px;
+            background-color: var(--loading-bg);
             border-radius: 16px;
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-muted);
+            margin-top: 12px;
+            font-weight: 300;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
             grid-column: 1 / -1;
         }
 
         .error-state {
-            color: #ff6b6b;
+            color: var(--error-color);
         }
 
-        /* 响应式调整 */
+        /* ===== 响应式 ===== */
         @media (max-width: 768px) {
             .page-wrapper {
                 padding: 20px 16px;
@@ -291,8 +446,15 @@ title: 分类
                 padding: 28px 24px;
             }
             .nav-menu {
-                gap: 16px;
-                flex-wrap: wrap;
+                gap: 12px;
+            }
+            #theme-toggle {
+                width: 28px;
+                height: 28px;
+                font-size: 0.95rem;
+            }
+            .category-card {
+                height: 150px;
             }
             .post-item {
                 gap: 12px;
@@ -302,7 +464,7 @@ title: 分类
                 height: 48px;
             }
             .post-title {
-                font-size: 0.95rem;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -310,40 +472,58 @@ title: 分类
 <body>
     <div class="page-wrapper">
         <div class="main-card">
-            <!-- 顶部区域 -->
             <div class="top-section">
-                <div class="site-title">
-                    <!-- 将原来的 img 标签替换为 Lottie 容器 -->
-                    <div id="lottie-animation" class="lottie-container"></div>
-                    <span>SYLVIE's Blog</span>
+                <!-- 顶部行：站点标题 + 主题按钮 -->
+                <div class="top-row">
+                    <div class="site-title">
+                        <svg class="title-icon" viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M506.67 520h-33.26c-0.99 0-1.79-0.8-1.79-1.79V125.79c0-0.99 0.8-1.79 1.79-1.79h33.26c0.99 0 1.79 0.8 1.79 1.79v392.42c0 0.99-0.8 1.79-1.79 1.79z" fill="currentColor"/>
+                            <path d="M503.24 293.27l-23.52 23.52c-0.7 0.7-1.83 0.7-2.53 0L375.53 215.12c-0.7-0.7-0.7-1.83 0-2.53l23.52-23.52c0.7-0.7 1.83-0.7 2.53 0l101.66 101.66c0.7 0.71 0.7 1.84 0 2.54z" fill="currentColor"/>
+                            <path d="M476.84 293.27l23.52 23.52c0.7 0.7 1.83 0.7 2.53 0l101.66-101.66c0.7-0.7 0.7-1.83 0-2.53l-23.52-23.52c-0.7-0.7-1.83-0.7-2.53 0L476.84 290.74c-0.7 0.7-0.7 1.83 0 2.53zM498.35 505.6l-16.63 28.8c-0.49 0.86-1.59 1.15-2.45 0.66L139.43 338.85a1.796 1.796 0 0 1-0.66-2.45l16.63-28.8c0.49-0.86 1.59-1.15 2.45-0.66L497.7 503.15c0.85 0.5 1.15 1.59 0.65 2.45z" fill="currentColor"/>
+                            <path d="M300.28 395.2l8.61 32.12c0.26 0.96-0.31 1.94-1.27 2.19l-138.87 37.21c-0.96 0.26-1.94-0.31-2.19-1.27l-8.61-32.12c-0.26-0.96 0.31-1.94 1.27-2.19l138.87-37.21c0.96-0.25 1.94 0.32 2.19 1.27z" fill="currentColor"/>
+                            <path d="M287.08 418.07l32.12-8.61c0.96-0.26 1.52-1.24 1.27-2.19L283.26 268.4a1.795 1.795 0 0 0-2.19-1.27l-32.12 8.61c-0.96 0.26-1.52 1.24-1.27 2.19l37.21 138.87a1.79 1.79 0 0 0 2.19 1.27z" fill="currentColor"/>
+                            <path d="M481.72 505.6l16.63 28.8c0.49 0.86 0.2 1.95-0.66 2.45L157.85 733.06c-0.86 0.49-1.95 0.2-2.45-0.66l-16.63-28.8c-0.49-0.86-0.2-1.95 0.66-2.45l339.84-196.21c0.87-0.49 1.96-0.2 2.45 0.66z" fill="currentColor"/>
+                            <path d="M287.08 621.93l32.12 8.61c0.96 0.26 1.52 1.24 1.27 2.19L283.26 771.6c-0.26 0.96-1.24 1.52-2.19 1.27l-32.12-8.61a1.795 1.795 0 0 1-1.27-2.19l37.21-138.87a1.79 1.79 0 0 1 2.19-1.27z" fill="currentColor"/>
+                            <path d="M300.28 644.8l8.61-32.12c0.26-0.96-0.31-1.94-1.27-2.19l-138.87-37.21c-0.96-0.26-1.94 0.31-2.19 1.27l-8.61 32.12c-0.26 0.96 0.31 1.94 1.27 2.19l138.87 37.21c0.96 0.25 1.94-0.32 2.19-1.27z" fill="currentColor"/>
+                            <path d="M473.41 520h33.26c0.99 0 1.79 0.8 1.79 1.79v392.42c0 0.99-0.8 1.79-1.79 1.79h-33.26c-0.99 0-1.79-0.8-1.79-1.79V521.79c0-0.99 0.8-1.79 1.79-1.79z" fill="currentColor"/>
+                            <path d="M476.84 746.73l23.52-23.52c0.7-0.7 1.83-0.7 2.53 0l101.66 101.66c0.7 0.7 0.7 1.83 0 2.53l-23.52 23.52c-0.7 0.7-1.83 0.7-2.53 0L476.84 749.26c-0.7-0.7-0.7-1.83 0-2.53z" fill="currentColor"/>
+                            <path d="M503.24 746.73l-23.52-23.52c-0.7-0.7-1.83-0.7-2.53 0L375.53 824.88c-0.7 0.7-0.7 1.83 0 2.53l23.52 23.52c0.7 0.7 1.83 0.7 2.53 0l101.66-101.66c0.7-0.71 0.7-1.84 0-2.54z" fill="currentColor"/>
+                            <path d="M481.72 534.4l16.63-28.8c0.49-0.86 1.59-1.15 2.45-0.66l339.84 196.21c0.86 0.49 1.15 1.59 0.66 2.45l-16.63 28.8c-0.49 0.86-1.59 1.15-2.45 0.66L482.38 536.85c-0.86-0.5-1.15-1.59-0.66-2.45z" fill="currentColor"/>
+                            <path d="M679.79 644.8l-8.61-32.12c-0.26-0.96 0.31-1.94 1.27-2.19l138.87-37.21c0.96-0.26 1.94 0.31 2.19 1.27l8.61 32.12c0.26 0.96-0.31 1.94-1.27 2.19l-138.87 37.21c-0.95 0.25-1.93-0.32-2.19-1.27z" fill="currentColor"/>
+                            <path d="M693 621.93l-32.12 8.61c-0.96 0.26-1.52 1.24-1.27 2.19l37.21 138.87c0.26 0.96 1.24 1.52 2.19 1.27l32.12-8.61c0.96-0.26 1.52-1.24 1.27-2.19L695.19 623.2a1.795 1.795 0 0 0-2.19-1.27z" fill="currentColor"/>
+                            <path d="M498.35 534.4l-16.63-28.8c-0.49-0.86-0.2-1.95 0.66-2.45l339.84-196.21c0.86-0.49 1.95-0.2 2.45 0.66l16.63 28.8c0.49 0.86 0.2 1.95-0.66 2.45L500.8 535.06c-0.86 0.49-1.95 0.2-2.45-0.66z" fill="currentColor"/>
+                            <path d="M693 418.07l-32.12-8.61a1.795 1.795 0 0 1-1.27-2.19l37.21-138.87c0.26-0.96 1.24-1.52 2.19-1.27l32.12 8.61c0.96 0.26 1.52 1.24 1.27 2.19L695.19 416.8c-0.26 0.96-1.24 1.52-2.19 1.27z" fill="currentColor"/>
+                            <path d="M679.79 395.2l-8.61 32.12c-0.26 0.96 0.31 1.94 1.27 2.19l138.87 37.21c0.96 0.26 1.94-0.31 2.19-1.27l8.61-32.12c0.26-0.96-0.31-1.94-1.27-2.19l-138.87-37.21c-0.95-0.25-1.93 0.32-2.19 1.27z" fill="currentColor"/>
+                        </svg>
+                        SYLVIE's Blog
+                    </div>
+                    <button id="theme-toggle" aria-label="切换主题">
+                        <span id="theme-icon">🌙</span>
+                    </button>
                 </div>
                 
-                <!-- 进度条 -->
                 <div class="progress-container">
                     <div class="progress-bar" id="progressBar"></div>
                 </div>
 
-                <!-- 导航菜单 -->
                 <div class="nav-menu">
                     <a href="/" class="nav-link">首页</a>
-                    <a href="/blog-custom.html" class="nav-link">博客</a>
+                    <a href="/blog-custom.html" class="nav-link">日志</a>
                     <a href="/categories/" class="nav-link active">分类</a>
                     <a href="/guestbook.html" class="nav-link">留言</a>
                 </div>
             </div>
 
-            <!-- 动态内容容器（完全不变） -->
             <div id="dynamic-content">
-                <!-- 分类列表容器 -->
                 <div id="categories-container" class="categories-grid">
-                    <div class="loading-state">加载分类中...</div>
+                    <div class="loading-state">📂 加载分类中...</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // ===== 阅读进度条（完全不变） =====
+        // ===== 阅读进度条 =====
         window.addEventListener('scroll', function() {
             const winScroll = document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -351,57 +531,13 @@ title: 分类
             document.getElementById('progressBar').style.width = scrolled + '%';
         });
 
-        // ===== 加载 Lottie 动画（新增） =====
-        function loadLottieAnimation() {
-            const animationContainer = document.getElementById('lottie-animation');
-            
-            // 检查 Lottie 是否加载成功
-            if (typeof lottie === 'undefined') {
-                console.error('Lottie 库加载失败');
-                // 如果 Lottie 加载失败，显示一个简单的占位符（保持原有尺寸）
-                animationContainer.style.backgroundColor = '#d19a66';
-                animationContainer.style.borderRadius = '4px';
-                return;
-            }
-
-            // 加载 JSON 动画文件
-            fetch('/images/qq.json')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('JSON 文件不存在');
-                    }
-                    return response.json();
-                })
-                .then(animationData => {
-                    // 清空容器
-                    animationContainer.innerHTML = '';
-                    
-                    // 加载并播放动画
-                    lottie.loadAnimation({
-                        container: animationContainer,
-                        renderer: 'svg',
-                        loop: true,
-                        autoplay: true,
-                        animationData: animationData
-                    });
-                    
-                    console.log('Lottie 动画加载成功');
-                })
-                .catch(error => {
-                    console.error('动画加载失败:', error);
-                    // 如果加载失败，显示一个简单的占位符
-                    animationContainer.style.backgroundColor = '#d19a66';
-                    animationContainer.style.borderRadius = '4px';
-                });
-        }
-
-        // ===== 获取URL参数（完全不变） =====
+        // ===== 获取URL参数 =====
         function getUrlParam(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
         }
 
-        // ===== 加载分类数据（显示分类卡片）- 完全不变 =====
+        // ===== 加载分类卡片 =====
         function loadCategories() {
             const container = document.getElementById('dynamic-content');
             
@@ -418,22 +554,12 @@ title: 分类
                         return;
                     }
                     
-                    // 按分类整理文章
-                    let categoriesMap = new Map();
-                    
+                    const categoriesMap = new Map();
                     posts.forEach(post => {
                         if (post.categories && post.categories.length > 0) {
                             post.categories.forEach(cat => {
-                                // 获取分类名称
-                                let catName = '';
-                                if (typeof cat === 'string') {
-                                    catName = cat;
-                                } else if (cat && typeof cat === 'object') {
-                                    catName = cat.name || cat.slug || '';
-                                }
-                                
+                                let catName = typeof cat === 'string' ? cat : (cat.name || cat.slug || '');
                                 if (!catName) return;
-                                
                                 if (!categoriesMap.has(catName)) {
                                     categoriesMap.set(catName, []);
                                 }
@@ -447,71 +573,40 @@ title: 分类
                         return;
                     }
                     
-                    // 自定义分类顺序
-                    const categoryOrder = ['生活', '技术', '骑行', '摄影', '测试', '学习'];
-                    
-                    // 排序分类
+                    const categoryOrder = ['生活', '技术', '骑行', '摄影', '测试', '学习', '读书'];
                     const sortedCategories = Array.from(categoriesMap.entries())
                         .sort((a, b) => {
-                            const indexA = categoryOrder.indexOf(a[0]);
-                            const indexB = categoryOrder.indexOf(b[0]);
-                            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-                            if (indexA !== -1) return -1;
-                            if (indexB !== -1) return 1;
+                            const ia = categoryOrder.indexOf(a[0]), ib = categoryOrder.indexOf(b[0]);
+                            if (ia !== -1 && ib !== -1) return ia - ib;
+                            if (ia !== -1) return -1;
+                            if (ib !== -1) return 1;
                             return a[0].localeCompare(b[0]);
                         });
                     
-                    // 生成分类卡片HTML（两列布局）
                     let html = '<div class="categories-grid">';
-                    
                     sortedCategories.forEach(([catName, catPosts]) => {
-                        // 取第一篇作为预览
                         const firstPost = catPosts[0];
-                        const firstPostPath = firstPost.path.startsWith('/') ? firstPost.path : '/' + firstPost.path;
-                        const firstPostLink = `/post-template.html?path=${encodeURIComponent(firstPostPath)}`;
-                        
-                        // 获取分类图标
-                        const categoryIcons = {
-                            '生活': '📝',
-                            '技术': '💻',
-                            '骑行': '🚴',
-                            '摄影': '📷',
-                            '测试': '🧪',
-                            '学习': '📚',
-                            '默认': '📄'
-                        };
-                        const icon = categoryIcons[catName] || categoryIcons['默认'];
-                        
-                        // 生成分类卡片 - 修改为左下角布局
-html += `
-    <div class="category-card" data-category="${catName}" onclick="window.location.href='/categories/?cat=${encodeURIComponent(catName)}'">
-        <div style="padding: 20px 20px 0px 20px; background: linear-gradient(135deg, rgba(209,154,102,0.2) 0%, rgba(0,0,0,0.4) 100%); height: 100%; display: flex; flex-direction: column; justify-content: flex-end;">
-            <div style="margin-bottom: 10px;">
-                <span style="font-size: 0.9rem; font-weight: 500; color: #dddddd; display: block; margin-bottom: 2px;">${catName} (${catPosts.length}篇)</span>
-                <div style="color: #ffffff; font-size: 0.95rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                    ${firstPost.title || '无标题'}
-                </div>
-            </div>
-        </div>
-    </div>
-`;
+                        const firstPostTitle = firstPost.title || '无标题';
+                        html += `
+                            <div class="category-card" data-category="${catName}" onclick="window.location.href='/categories/?cat=${encodeURIComponent(catName)}'">
+                                <div class="card-content">
+                                    <span class="card-name">${catName}</span>
+                                    <span class="card-count">${catPosts.length} 篇</span>
+                                    <div class="card-preview">${firstPostTitle}</div>
+                                </div>
+                            </div>
+                        `;
                     });
-                    
                     html += '</div>';
                     container.innerHTML = html;
                 })
                 .catch(error => {
                     console.error('加载失败:', error);
-                    container.innerHTML = `
-                        <div class="error-state">
-                            <h3>⚠️ 加载失败</h3>
-                            <p>${error.message}</p>
-                        </div>
-                    `;
+                    container.innerHTML = `<div class="error-state"><h3>⚠️ 加载失败</h3><p>${error.message}</p></div>`;
                 });
         }
 
-        // ===== 加载分类详情页（显示该分类下的所有文章）- 完全不变 =====
+        // ===== 加载分类详情（文章列表） =====
         function loadCategoryDetail(categoryName) {
             const container = document.getElementById('dynamic-content');
             
@@ -523,34 +618,26 @@ html += `
                 .then(data => {
                     let posts = Array.isArray(data) ? data : (data.posts || []);
                     
-                    // 筛选属于该分类的文章
                     const categoryPosts = posts.filter(post => {
-                        if (!post.categories || post.categories.length === 0) return false;
+                        if (!post.categories) return false;
                         return post.categories.some(cat => {
-                            let catName = '';
-                            if (typeof cat === 'string') {
-                                catName = cat;
-                            } else if (cat && typeof cat === 'object') {
-                                catName = cat.name || cat.slug || '';
-                            }
+                            const catName = typeof cat === 'string' ? cat : (cat.name || cat.slug || '');
                             return catName === categoryName;
                         });
                     });
                     
                     if (categoryPosts.length === 0) {
                         container.innerHTML = `
-                            <div class="error-state">
-                                <h3>❌ 分类 "${categoryName}" 下暂无文章</h3>
-                                <a href="/categories/" style="color:#d19a66; margin-top:1rem; display:inline-block;">返回分类列表</a>
+                            <div>
+                                <a href="/categories/" class="back-link">← 返回分类列表</a>
+                                <div class="error-state"><h3>❌ 分类 "${categoryName}" 下暂无文章</h3></div>
                             </div>
                         `;
                         return;
                     }
                     
-                    // 按日期排序
                     categoryPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
                     
-                    // 生成文章列表HTML - 完全复制博客页的样式
                     let postsHtml = '';
                     categoryPosts.forEach(post => {
                         let dateStr = '日期未知';
@@ -572,49 +659,88 @@ html += `
                                     <a href="${articleLink}" class="post-title">${post.title || '无标题'}</a>
                                     <div class="post-footer">
                                         <span class="post-date">${dateStr}</span>
-                                        <div class="post-meta">
-                                            <span id="busuanzi_container_page_pv">
-                                                <span class="busuanzi_value_page_pv"></span>
-                                            </span>
-                                        </div>
                                     </div>
                                 </div>
                             </li>
                         `;
                     });
                     
-                    // 渲染分类详情页 - 只保留文章列表
                     container.innerHTML = `
                         <div>
-                            <ul class="posts-list">
-                                ${postsHtml}
-                            </ul>
+                            <a href="/categories/" class="back-link">← 返回分类列表</a>
+                            <ul class="posts-list">${postsHtml}</ul>
                         </div>
                     `;
                 })
                 .catch(error => {
                     container.innerHTML = `
-                        <div class="error-state">
-                            <h3>⚠️ 加载失败</h3>
-                            <p>${error.message}</p>
+                        <div>
+                            <a href="/categories/" class="back-link">← 返回分类列表</a>
+                            <div class="error-state"><h3>⚠️ 加载失败</h3><p>${error.message}</p></div>
                         </div>
                     `;
                 });
         }
 
+        // ===== 主题切换功能 =====
+        (function() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const iconSpan = document.getElementById('theme-icon');
+            const htmlElement = document.documentElement;
+
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    htmlElement.classList.add('dark');
+                    iconSpan.textContent = '☀️';
+                } else {
+                    htmlElement.classList.remove('dark');
+                    iconSpan.textContent = '🌙';
+                }
+                localStorage.setItem('theme', theme);
+            }
+
+            function getCurrentTheme() {
+                return htmlElement.classList.contains('dark') ? 'dark' : 'light';
+            }
+
+            function toggleTheme() {
+                const current = getCurrentTheme();
+                const next = current === 'dark' ? 'light' : 'dark';
+                applyTheme(next);
+            }
+
+            function initTheme() {
+                const stored = localStorage.getItem('theme');
+                if (stored === 'dark' || stored === 'light') {
+                    applyTheme(stored);
+                    return;
+                }
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                applyTheme(prefersDark ? 'dark' : 'light');
+            }
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleTheme();
+                });
+            }
+
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                if (!localStorage.getItem('theme')) {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+
+            initTheme();
+        })();
+
         // ===== 页面初始化 =====
         (function() {
-            // 先加载 Lottie 动画
-            loadLottieAnimation();
-            
-            // 然后加载分类内容
             const selectedCat = getUrlParam('cat');
-            
             if (selectedCat) {
-                // 如果有 cat 参数，显示分类详情
                 loadCategoryDetail(selectedCat);
             } else {
-                // 否则显示分类列表
                 loadCategories();
             }
         })();

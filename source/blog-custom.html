@@ -10,7 +10,54 @@ title: 博客
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>日志 · SYLVIE's Blog</title>
     <style>
-        /* 全局样式 - 深色背景 */
+    
+        :root {
+            /* 浅色模式*/
+            --bg-body: #3171dc;          
+            --bg-wrapper: #7db9de;
+            --bg-card: #ffffff;           
+            --text-primary: #7db9de;      
+            --text-secondary: #7db9de;    /* 次文字：蓝灰 */
+            --text-muted: #7db9de;        /* 辅助文字：灰 */
+            --text-nav: #7db9de;          /* 导航文字：深蓝灰 */
+            --border-color: #f2f4f8;      /* 边框：暖灰 */
+            --accent-color: #808080;      /* 强调色（保留） */
+            --accent-hover: #b8864a;
+            --card-shadow: 0 2px 12px rgba(44, 62, 80, 0.06);
+            --loading-bg: rgba(44, 62, 80, 0.04);
+            --error-color: #c0392b;
+            --post-title: #7db9de;
+            --post-title-hover: #1a2a3a;
+            --post-date: #7a8a9e;
+            --progress-bg: #f2f4f8;
+            --stat-text: #7a8a9e;
+            --site-title: #2c3e50;
+        }
+
+        /* ===== 2. 深色模式 ===== */
+        html.dark {
+            --bg-body: #1e2024;
+            --bg-wrapper: #1e2024;
+            --bg-card: #25282e;
+            --text-primary: #d4d8e0;
+            --text-secondary: #c0c6d0;
+            --text-muted: #a8b0be;
+            --text-nav: #d4d8e0;
+            --border-color: #3a3e45;
+            --accent-color: #d4d8e0;
+            --accent-hover: #e0aa77;
+            --card-shadow: none;
+            --loading-bg: rgba(255, 255, 255, 0.04);
+            --error-color: #ff6b6b;
+            --post-title: #d4d8e0;
+            --post-title-hover: #ffffff;
+            --post-date: #a8b0be;
+            --progress-bg: #3a3e45;
+            --stat-text: #a8b0be;
+            --site-title: #d4d8e0;
+        }
+
+        /* ===== 3. 全局样式 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -20,127 +67,186 @@ title: 博客
         html, body {
             height: 100%;
             font-family: "Helvetica Neue", "Helvetica", "Arial", "Hei", "Microsoft YaHei", "PingFang SC", sans-serif;
-            background-color: #282c34;
-            color: #ffffff;
-            line-height: 1.6;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.7;
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
         
-        /* 外层容器 - 深色背景 */
         .page-wrapper {
-            background-color: #282c34;
+            background-color: var(--bg-wrapper);
             min-height: 100vh;
             padding: 40px 20px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
+            transition: background-color 0.4s ease;
         }
 
-        /* ===== 深色主卡片容器 ===== */
         .main-card {
             width: 100%;
             max-width: 780px;
-            background-color: #23272e;
+            background-color: var(--bg-card);
             padding: 22px 48px;
             margin: 0 auto;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
         }
 
-        /* ===== 顶部区域 ===== */
         .top-section {
-            margin-bottom: 32px;
+            margin-bottom: 8px;
             position: relative;
         }
 
-        /* 站点名称 */
+        /* ===== 新增：顶部行（标题 + 按钮） ===== */
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 6px;   
+            margin-bottom: 8px;
+            width: 100%;
+            
+        }
+
         .site-title {
             font-size: 1.0rem;
-            font-weight: 150;
+            font-weight: 300;
             letter-spacing: 0.5px;
-            color: #ffffff;
-            margin-bottom: 8px;
+            color: var(--site-title);
             text-align: left;
             opacity: 0.95;
             display: flex;
             align-items: center;
+            transition: color 0.4s ease;
         }
 
-        /* 站点名称前面的小图片 */
         .site-logo-img {
-            width: 35px;
-            height: 35px;
-            margin-right: 6px;
-            object-fit: cover;
+            width: 28px;
+            height: 28px;
+           color: var(--site-title); 
         }
 
-        /* 进度条容器 */
         .progress-container {
             width: 100%;
-            height: 3px;
-            background-color: #403e3e;
-            margin-bottom: 16px;
+            height: 1.5px;
+            background-color: var(--progress-bg);
+            margin-bottom: 12px;
+            transition: background-color 0.4s ease;
         }
 
-        /* 进度条 - 动态宽度 */
         .progress-bar {
-            height: 3px;
-            background-color: #d19a66;
+            height: 1.5px;
+            background-color: var(--accent-color);
             width: 0%;
             transition: width 0.1s ease;
         }
 
-        /* 导航菜单 */
+        /* ===== 4. 导航菜单 ===== */
         .nav-menu {
             display: flex;
-            gap: 24px;
+            gap: 15px;
             margin: 0;
             padding: 0;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-link {
-            padding: 4px 0;
+            padding: 2px 0;
             text-decoration: none;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
+            color: var(--text-nav);
+           
+            font-size: 0.97rem;
             font-weight: 650;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             letter-spacing: 0.5px;
-            border-bottom: 1px solid transparent;
+            border-bottom: 1.0px solid transparent;
+            /*transform: scaleY(1.05);*/
         }
 
         .nav-link:hover {
-            color: #d19a66;
+            color: var(--accent-color);
         }
 
         .nav-link.active {
-            color: #d19a66;
-            border-bottom-color: #d19a66;
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+            
         }
 
-        /* ===== 文章列表 ===== */
+        /* ===== 主题切换按钮 - 正方形虚线框，独立于导航栏 ===== */
+        #theme-toggle {
+            cursor: pointer;
+            user-select: none;
+            font-size: 1.0rem;
+            border: 1.5px dashed rgba(44, 62, 80, 0.3);
+            background: none;
+            padding: 0;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            color: var(--text-nav);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 27px;
+            height: 27px;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        /* 深色模式下虚线框颜色 */
+        html.dark #theme-toggle {
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        #theme-toggle:hover {
+            background-color: rgba(128, 128, 128, 0.12);
+            border-color: var(--accent-color);
+            transform: scale(1.05);
+            color: var(--accent-color);
+        }
+
+        #theme-toggle:active {
+            transform: scale(0.92);
+        }
+
+        #theme-icon {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        #theme-toggle:hover #theme-icon {
+            transform: rotate(20deg);
+        }
+
+        /* ===== 5. 文章列表 ===== */
         .posts-list {
             list-style: none;
-            margin-top: 24px;
+            margin-top: 0px;
         }
-
-        /* 文章项 - 使用flex布局 */
+/* 文章项 - 使用flex布局 */
         .post-item {
             display: flex;
             align-items: center;
             padding: 10px 0;
-            gap: 16px;
+            gap: 15px;
         }
 
         .post-item:last-child {
             border-bottom: none;
         }
+        
 
-        /* 左侧小图片容器 */
         .post-image {
             width: 50px;
             height: 50px;
             border-radius: 8px;
             overflow: hidden;
-            background-color: #f5f5f5;
+            background-color: var(--border-color);
             flex-shrink: 0;
+            transition: background-color 0.4s ease;
         }
 
         .post-image img {
@@ -150,7 +256,6 @@ title: 博客
             display: block;
         }
 
-        /* 右侧内容容器 - 采用上下布局 */
         .post-content {
             flex: 1;
             display: flex;
@@ -160,7 +265,6 @@ title: 博客
             padding: 2px 0;
         }
 
-        /* 标题行 - 标题单独一行，去掉右侧空间 */
         .post-title-row {
             display: flex;
             align-items: center;
@@ -168,51 +272,67 @@ title: 博客
             margin-bottom: 4px;
         }
 
-        /* 标题 */
         .post-title {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: 550;
-            color: #d19a66;
+            color: var(--post-title);
             text-decoration: none;
-            transition: color 0.2s ease;
+            transition: color 0.25s ease;
             word-break: break-word;
         }
 
         .post-title:hover {
-            color: #ffffff;
+            color: var(--post-title-hover);
         }
 
-        /* 底部信息行 - 只放日期 */
         .post-footer {
             display: flex;
             align-items: center;
             width: 100%;
         }
 
-        /* 日期 */
         .post-date {
             font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
+            color: var(--post-date);
+            transition: color 0.4s ease;
         }
 
-        /* 加载状态 */
+        /* ===== 6. 加载/错误/空状态 ===== */
         .loading-state, .error-state, .empty-state {
             text-align: center;
             padding: 40px 20px;
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: var(--loading-bg);
             border-radius: 16px;
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-muted);
             margin-top: 24px;
             font-weight: 300;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
         }
 
-        /* 错误状态特殊颜色 */
         .error-state {
-            color: #ff6b6b;
+            color: var(--error-color);
         }
 
-        /* 响应式调整 */
+        /* ===== 7. 统计信息 ===== */
+        .site-stats {
+            text-align: center;
+            margin-top: 8px;
+            padding-top: 16px;
+            font-size: 0.8rem;
+            color: var(--stat-text);
+            border-top: 1px solid var(--border-color);
+            transition: color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .site-stats img {
+            width: 1.1rem;
+            height: 1.1rem;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        /* ===== 8. 响应式调整 ===== */
         @media (max-width: 768px) {
             .page-wrapper {
                 padding: 20px 16px;
@@ -222,7 +342,11 @@ title: 博客
             }
             .nav-menu {
                 gap: 16px;
-                flex-wrap: wrap;
+            }
+            #theme-toggle {
+                width: 28px;
+                height: 28px;
+                font-size: 0.95rem;
             }
             .post-item {
                 gap: 12px;
@@ -232,27 +356,37 @@ title: 博客
                 height: 48px;
             }
             .post-title {
-                font-size: 0.95rem;
+                font-size: 0.9rem;
             }
         }
     </style>
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 </head>
 <body>
-    <!-- 深色背景容器 -->
     <div class="page-wrapper">
         <div class="main-card">
-            <!-- 顶部区域保持不变 -->
             <div class="top-section">
-                <div class="site-title">
-                    <img src="/images/头像1.png" alt="logo" class="site-logo-img">
-                    SYLVIE's Blog
+                <!-- ===== 新增顶部行：左标题 + 右按钮 ===== -->
+                <div class="top-row">
+                    <div class="site-title">
+    <svg class="site-logo-img" viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M376.4 293.3h32.8v666.2h-32.8zM729.8 622.3h32.8v337.3h-32.8z" fill="currentColor"/>
+        <path d="M388.8 876.1l-4.7-1.9C218.3 808.4 123.5 715.4 102.3 598c-10.2-56.8-3-119.2 21.6-185.5 19.6-52.8 50.2-108.5 91-165.4 56.4-78.6 118.6-140.6 151.3-171.2l-0.9-0.9 14.6-11.6c7.9-6.3 17.9-3.9 22.9 2.1l0.9 1.2c232 226 327.7 417.7 284.5 569.7-12.2 42.8-35.4 82-69.2 116.7-26.6 27.3-59.8 51.8-98.7 72.8-65.6 35.5-124.2 48.7-126.7 49.2l-4.8 1z m1-777.3c-31.5 29.3-92.7 90.1-148.2 167.4-87.9 122.5-123.9 232.2-107 326 18.8 104.4 105.2 188.4 256.8 249.6 14.9-3.8 62.8-17.4 114.2-45.3 81-44 131.8-101 151.2-169.4 17.7-62.5 8.3-134.7-28-214.5-42.7-94-123.1-199.5-239-313.8z" fill="currentColor"/>
+        <path d="M205.535 538.417l21.222-25.01 176.671 149.91-21.222 25.01zM673.702 748.932L690.23 720.6l64.267 37.49-16.528 28.332zM377.769 505.542l131.18-150.98 24.76 21.514-131.18 150.98zM731.596 729.87l66.913-70.64 23.813 22.557-66.913 70.64z" fill="currentColor"/>
+        <path d="M737.7 875.5c-65.7 0-128.1-35.6-160.7-95.1-4.4-7.9-1.5-17.9 6.5-22.3 7.9-4.4 17.9-1.5 22.3 6.5 32.6 59.5 101.4 89.8 167.3 73.8 39-9.5 72-33.6 92.8-68 20.9-34.4 27.1-74.8 17.6-113.9-9.5-39.1-33.7-72.2-68-93.1-34.3-20.9-74.7-27.2-113.7-17.7-8.8 2.1-17.7-3.3-19.8-12.1-2.1-8.8 3.3-17.7 12.1-19.8 47.5-11.6 96.7-3.9 138.5 21.6s71.2 65.8 82.8 113.4 4 96.9-21.4 138.7c-25.4 41.9-65.6 71.3-113.1 82.8-14.5 3.5-28.9 5.2-43.2 5.2z" fill="currentColor"/>
+    </svg>
+    SYLVIE's Blog
+</div>
+                    <button id="theme-toggle" aria-label="切换主题">
+                        <span id="theme-icon">🌙</span>
+                    </button>
                 </div>
                 
                 <div class="progress-container">
                     <div class="progress-bar" id="progressBar"></div>
                 </div>
 
+                <!-- ===== 导航栏中移除按钮 ===== -->
                 <div class="nav-menu">
                     <a href="/" class="nav-link">首页</a>
                     <a href="/blog-custom.html" class="nav-link active">日志</a>
@@ -261,106 +395,159 @@ title: 博客
                 </div>
             </div>
 
-            <!-- 文章列表容器 -->
             <main class="posts-list" id="posts-container">
                 <div class="loading-state">📚 加载文章中...</div>
             </main>
+
+            <div class="site-stats">
+                <img src="/images/统计.png" alt="统计">
+                本站总访问量：<span id="busuanzi_value_site_pv">0</span> 次
+            </div>
         </div>
     </div>
-<!-- 不蒜子统计 - 全站总访问量 -->
-<div style="text-align: center; margin-top: -40px; padding-top: 0px; font-size: 0.8rem; color: rgba(255,255,255,0.5);">
-<img src="/images/统计.png" alt="统计" style="width: 1.1rem; height: 1.1rem; vertical-align: middle; margin-right: 5px;">
- 本站总访问量：<span id="busuanzi_value_site_pv">0</span> 次
-</div>
+
     <script>
-// ===== 阅读进度条功能 =====
-window.addEventListener('scroll', function() {
-    const winScroll = document.documentElement.scrollTop;
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
-    document.getElementById('progressBar').style.width = scrolled + '%';
-});
+    // ===== 阅读进度条 =====
+    window.addEventListener('scroll', function() {
+        const winScroll = document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById('progressBar').style.width = scrolled + '%';
+    });
 
-// ===== 相对时间格式化函数 =====
-function timeAgo(dateString) {
-    try {
-        const date = new Date(dateString);
-        const now = new Date();
-        const seconds = Math.floor((now - date) / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
-        const months = Math.floor(days / 30);
-        const years = Math.floor(days / 365);
-        if (years > 0) return years + '年前';
-        if (months > 0) return months + '个月前';
-        if (days > 0) return days + '天前';
-        return '今日';
-    } catch(e) {
-        return '日期未知';
+    // ===== 相对时间格式化 =====
+    function timeAgo(dateString) {
+        try {
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365);
+            if (years > 0) return years + '年前';
+            if (months > 0) return months + '个月前';
+            if (days > 0) return days + '天前';
+            return '今日';
+        } catch(e) {
+            return '日期未知';
+        }
     }
-}
 
-// ===== 文章加载功能 =====
-(function() {
-    const container = document.getElementById('posts-container');
-    container.innerHTML = '<div class="loading-state">📚 加载文章中...</div>';
-    
-    fetch('/content.json?t=' + Date.now())
-        .then(response => {
-            if (!response.ok) throw new Error('content.json 不存在');
-            return response.json();
-        })
-        .then(data => {
-            console.log('content.json 加载成功，文章数量:', data.length);
-            
-            let posts = Array.isArray(data) ? data : (data.posts || []);
-            
-            if (posts.length === 0) {
-                container.innerHTML = '<div class="empty-state">📭 暂无文章</div>';
-                return;
-            }
-            
-            posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            let html = '';
-            posts.forEach((post) => {
-                const relativeDate = timeAgo(post.date);   
-                const postPath = post.path.startsWith('/') ? post.path : '/' + post.path;
-                const link = `/post-template.html?path=${encodeURIComponent(postPath)}`;
-                const thumbnail = post.thumbnail || '/images/default-post.jpg';
+    // ===== 文章加载 =====
+    (function() {
+        const container = document.getElementById('posts-container');
+        container.innerHTML = '<div class="loading-state">📚 加载文章中...</div>';
+        
+        fetch('/content.json?t=' + Date.now())
+            .then(response => {
+                if (!response.ok) throw new Error('content.json 不存在');
+                return response.json();
+            })
+            .then(data => {
+                console.log('content.json 加载成功，文章数量:', data.length);
                 
-                html += `
-                    <div class="post-item">
-                        <div class="post-image">
-                            <img src="${thumbnail}" alt="${post.title}" loading="lazy">
-                        </div>
-                        <div class="post-content">
-                            <div class="post-title-row">
-                                <a href="${link}" class="post-title">${post.title || '无标题'}</a>
+                let posts = Array.isArray(data) ? data : (data.posts || []);
+                
+                if (posts.length === 0) {
+                    container.innerHTML = '<div class="empty-state">📭 暂无文章</div>';
+                    return;
+                }
+                
+                posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                let html = '';
+                posts.forEach((post) => {
+                    const relativeDate = timeAgo(post.date);   
+                    const postPath = post.path.startsWith('/') ? post.path : '/' + post.path;
+                    const link = `/post-template.html?path=${encodeURIComponent(postPath)}`;
+                    const thumbnail = post.thumbnail || '/images/default-post.jpg';
+                    
+                    html += `
+                        <div class="post-item">
+                            <div class="post-image">
+                                <img src="${thumbnail}" alt="${post.title}" loading="lazy">
                             </div>
-                            <div class="post-footer">
-                                <span class="post-date">${relativeDate}</span>
+                            <div class="post-content">
+                                <div class="post-title-row">
+                                    <a href="${link}" class="post-title">${post.title || '无标题'}</a>
+                                </div>
+                                <div class="post-footer">
+                                    <span class="post-date">${relativeDate}</span>
+                                </div>
                             </div>
                         </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+                console.log('文章列表渲染完成');
+            })
+            .catch(error => {
+                console.error('加载失败:', error);
+                container.innerHTML = `
+                    <div class="error-state">
+                        <span style="font-size:1.5rem;">⚠️</span>
+                        <h3 style="color:var(--error-color);">加载失败</h3>
+                        <p>${error.message}</p>
                     </div>
                 `;
             });
-            
-            container.innerHTML = html;
-            console.log('文章列表渲染完成');
-        })
-        .catch(error => {
-            console.error('加载失败:', error);
-            container.innerHTML = `
-                <div class="error-state">
-                    <span style="font-size:1.5rem;">⚠️</span>
-                    <h3 style="color:#ff6b6b;">加载失败</h3>
-                    <p>${error.message}</p>
-                </div>
-            `;
+    })();
+
+    // ===== 主题切换功能 =====
+    (function() {
+        const toggleBtn = document.getElementById('theme-toggle');
+        const iconSpan = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                htmlElement.classList.add('dark');
+                iconSpan.textContent = '☀️';
+            } else {
+                htmlElement.classList.remove('dark');
+                iconSpan.textContent = '🌙';
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        function getCurrentTheme() {
+            return htmlElement.classList.contains('dark') ? 'dark' : 'light';
+        }
+
+        function toggleTheme() {
+            const current = getCurrentTheme();
+            const next = current === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
+        }
+
+        function initTheme() {
+            const stored = localStorage.getItem('theme');
+            if (stored === 'dark' || stored === 'light') {
+                applyTheme(stored);
+                return;
+            }
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(prefersDark ? 'dark' : 'light');
+        }
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleTheme();
+            });
+        }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                applyTheme(e.matches ? 'dark' : 'light');
+            }
         });
-})();
-</script>
+
+        initTheme();
+    })();
+    </script>
 </body>
 </html>
