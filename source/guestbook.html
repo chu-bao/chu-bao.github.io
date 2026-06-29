@@ -257,10 +257,6 @@ title: 留言板
             min-height: 400px;
         }
 
-        .twikoo-wrapper .tk-comments {
-            /* Twikoo 默认样式已适配，如有需要可额外自定义 */
-        }
-
         .loading-indicator {
             text-align: center;
             padding: 60px 20px;
@@ -373,35 +369,27 @@ title: 留言板
                 });
         }
 
-        // ===== Twikoo 评论加载 =====
+        // ===== Twikoo 评论加载（使用 Netlify 后端） =====
         function loadTwikoo() {
             const wrapper = document.getElementById('twikoo-wrapper');
-            const loadingEl = document.getElementById('loading-message');
             
-            // 清空容器，只保留加载提示
             wrapper.innerHTML = '<div id="loading-message" class="loading-indicator">加载留言板中...</div>';
             
-            // 动态加载 Twikoo 主库
             const script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.all.min.js';
             script.async = true;
             
             script.onload = function() {
                 console.log('Twikoo 库加载成功');
-                // 初始化 Twikoo
                 if (typeof twikoo !== 'undefined') {
                     twikoo.init({
-                        envId: 'https://twikoone-one.vercel.app',  // 你的 Vercel 后端地址
+                        // ===== 你的 Netlify Twikoo 后端地址 =====
+                        envId: 'https://sylvie-2026.netlify.app',
                         el: '#twikoo-wrapper',
-                        // 可选配置
-                        region: 'ap-guangzhou',  // 如果使用腾讯云环境，可指定地域
                         lang: 'zh-CN',
                         path: window.location.pathname,
-                        // 评论审核模式：true 表示需要审核，false 表示不需要审核
-                        // 此配置需要在后端环境变量中设置 COMMENT_AUDIT=true
                     }).then(function() {
                         console.log('Twikoo 初始化成功');
-                        // 加载完成后移除加载提示
                         const loadingMsg = document.getElementById('loading-message');
                         if (loadingMsg) loadingMsg.style.display = 'none';
                     }).catch(function(err) {
