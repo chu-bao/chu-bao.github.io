@@ -16,7 +16,6 @@ title: 留言板
     <style>
         /* ========== CSS变量 - 与分类页/文章详情页完全一致 ========== */
         :root {
-            /* 浅色模式 */
             --bg-body: #3171dc;
             --bg-wrapper: #7db9de;
             --bg-card: #ffffff;
@@ -41,7 +40,6 @@ title: 留言板
             --lottie-bg: transparent;
         }
 
-        /* 深色模式 */
         html.dark {
             --bg-body: #1e2024;
             --bg-wrapper: #1e2024;
@@ -109,7 +107,7 @@ title: 留言板
             position: relative;
         }
 
-        /* ===== 顶部行：站点标题 + 主题按钮 ===== */
+        /* ===== 顶部行 ===== */
         .top-row {
             display: flex;
             justify-content: space-between;
@@ -141,7 +139,7 @@ title: 留言板
             transition: background-color 0.4s ease;
         }
 
-        /* ===== 主题切换按钮 - 正方形虚线框 ===== */
+        /* ===== 主题切换按钮 ===== */
         #theme-toggle {
             cursor: pointer;
             user-select: none;
@@ -226,26 +224,14 @@ title: 留言板
             border-bottom-color: var(--accent-color);
         }
 
-        /* ========== Twikoo 评论区精简样式 ========== */
+        /* ===== Twikoo 容器 ===== */
         .twikoo-wrapper {
             margin-top: 0px;
             width: 100%;
             min-height: 400px;
         }
 
-        /* 1. 隐藏评论标题行（"X条评论" + 排序标签） */
-        .twikoo-wrapper .tk-comment-header,
-        .twikoo-wrapper .tk-comments-title,
-        .twikoo-wrapper .tk-sort {
-            display: none !important;
-        }
-
-        /* 2. 隐藏系统信息和IP地址 */
-        .twikoo-wrapper .tk-comment .tk-extra {
-            display: none !important;
-        }
-
-        /* 3. 精简输入框样式 - 无边框，只有下划线 */
+        /* ===== 精简样式 ===== */
         .twikoo-wrapper .tk-input .tk-field {
             border: none !important;
             border-bottom: 1px solid var(--border-color) !important;
@@ -268,7 +254,6 @@ title: 留言板
             opacity: 0.5 !important;
         }
 
-        /* 输入框标签 - 更淡更小 */
         .twikoo-wrapper .tk-input .tk-label {
             font-size: 0.75rem !important;
             color: var(--text-muted) !important;
@@ -277,7 +262,6 @@ title: 留言板
             opacity: 0.7 !important;
         }
 
-        /* 提交按钮 - 低调边框 */
         .twikoo-wrapper .tk-input .tk-submit {
             background-color: transparent !important;
             color: var(--accent-color) !important;
@@ -294,7 +278,6 @@ title: 留言板
             color: #ffffff !important;
         }
 
-        /* 预览按钮 */
         .twikoo-wrapper .tk-input .tk-preview {
             color: var(--text-muted) !important;
             border: none !important;
@@ -307,7 +290,6 @@ title: 留言板
             color: var(--accent-color) !important;
         }
 
-        /* 评论列表 */
         .twikoo-wrapper .tk-comment {
             border-bottom: 1px solid var(--border-color) !important;
             padding: 12px 0 !important;
@@ -329,7 +311,6 @@ title: 留言板
             line-height: 1.6 !important;
         }
 
-        /* 4. 精简 "Powered by Twikoo" */
         .twikoo-wrapper .tk-footer {
             opacity: 0.25 !important;
             font-size: 0.65rem !important;
@@ -351,7 +332,6 @@ title: 留言板
             transition: color 0.4s ease;
         }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 768px) {
             .page-wrapper {
                 padding: 20px 16px;
@@ -378,7 +358,6 @@ title: 留言板
     <div class="page-wrapper">
         <div class="main-card">
             <div class="top-section">
-                <!-- 顶部行：站点标题 + 主题按钮 -->
                 <div class="top-row">
                     <div class="site-title">
                         <div id="lottie-animation" class="lottie-container"></div>
@@ -401,7 +380,6 @@ title: 留言板
                 </div>
             </div>
 
-            <!-- Twikoo 评论容器 -->
             <div class="twikoo-wrapper" id="twikoo-wrapper">
                 <div id="loading-message" class="loading-indicator">加载留言板中...</div>
             </div>
@@ -420,14 +398,12 @@ title: 留言板
         // ===== Lottie 动画 =====
         function loadLottieAnimation() {
             const animationContainer = document.getElementById('lottie-animation');
-            
             if (typeof lottie === 'undefined') {
                 console.error('Lottie 库加载失败');
                 animationContainer.style.backgroundColor = '#d19a66';
                 animationContainer.style.borderRadius = '4px';
                 return;
             }
-
             fetch('/images/message.json')
                 .then(response => {
                     if (!response.ok) throw new Error('JSON 文件不存在');
@@ -451,10 +427,47 @@ title: 留言板
                 });
         }
 
+        // ===== 清理评论中不需要的元素 =====
+        function cleanTwikooUI() {
+            // 每隔 500ms 检查一次，持续 5 秒，确保 DOM 已渲染
+            let attempts = 0;
+            const maxAttempts = 10;
+            const interval = setInterval(() => {
+                attempts++;
+                const wrapper = document.getElementById('twikoo-wrapper');
+                if (!wrapper) return;
+
+                // 1. 删除评论标题行（包含"X条评论"和排序标签）
+                const header = wrapper.querySelector('.tk-comment-header');
+                if (header) header.remove();
+
+                // 2. 删除评论数标题
+                const title = wrapper.querySelector('.tk-comments-title');
+                if (title) title.remove();
+
+                // 3. 删除排序标签
+                const sort = wrapper.querySelector('.tk-sort');
+                if (sort) sort.remove();
+
+                // 4. 隐藏系统信息和IP地址
+                const extras = wrapper.querySelectorAll('.tk-comment .tk-extra');
+                extras.forEach(el => el.style.display = 'none');
+
+                // 如果都删完了，停止检查
+                if (!header && !title && !sort && extras.length > 0) {
+                    clearInterval(interval);
+                    console.log('Twikoo UI 精简完成');
+                }
+                if (attempts >= maxAttempts) {
+                    clearInterval(interval);
+                    console.log('Twikoo UI 精简检查结束');
+                }
+            }, 500);
+        }
+
         // ===== Twikoo 评论加载 =====
         function loadTwikoo() {
             const wrapper = document.getElementById('twikoo-wrapper');
-            
             wrapper.innerHTML = '<div id="loading-message" class="loading-indicator">加载留言板中...</div>';
             
             const script = document.createElement('script');
@@ -473,6 +486,8 @@ title: 留言板
                         console.log('Twikoo 初始化成功');
                         const loadingMsg = document.getElementById('loading-message');
                         if (loadingMsg) loadingMsg.style.display = 'none';
+                        // 初始化完成后，开始清理 UI
+                        setTimeout(cleanTwikooUI, 300);
                     }).catch(function(err) {
                         console.error('Twikoo 初始化失败:', err);
                         const loadingMsg = document.getElementById('loading-message');
@@ -490,7 +505,7 @@ title: 留言板
             wrapper.appendChild(script);
         }
 
-        // ===== 主题切换功能 =====
+        // ===== 主题切换 =====
         (function() {
             const toggleBtn = document.getElementById('theme-toggle');
             const iconSpan = document.getElementById('theme-icon');

@@ -442,44 +442,118 @@ title: 文章模板
         color: var(--error-color);
     }
 
-    /* ===== Giscus 评论容器 ===== */
-    .giscus-wrapper {
-        margin-top: 30px;
+    /* ===== Twikoo 评论容器 ===== */
+    .twikoo-wrapper {
+        margin-top: 40px;
         width: 100%;
         min-height: 200px;
+        border-top: 1px solid var(--border-color);
+        padding-top: 30px;
+        transition: border-color 0.4s ease;
     }
 
-    .giscus-wrapper .btn-primary,
-    .giscus-wrapper button.btn-primary {
-        background-color: var(--accent-color) !important;
-        border-color: var(--accent-color) !important;
-        color: #000000 !important;
-    }
-
-    .giscus-wrapper .btn-primary:hover:not(:disabled),
-    .giscus-wrapper button.btn-primary:hover:not(:disabled) {
-        background-color: var(--accent-hover) !important;
-        border-color: var(--accent-hover) !important;
-    }
-
-    .giscus-wrapper .btn-secondary,
-    .giscus-wrapper button.btn-secondary {
-        background-color: var(--border-color) !important;
-        border-color: rgba(128, 128, 128, 0.2) !important;
+    .twikoo-wrapper .tk-input .tk-field {
+        border: none !important;
+        border-bottom: 1px solid var(--border-color) !important;
+        border-radius: 0 !important;
+        padding: 6px 4px !important;
+        background: transparent !important;
+        transition: border-color 0.3s ease !important;
+        font-size: 0.95rem !important;
         color: var(--text-primary) !important;
     }
 
-    .giscus-wrapper .btn-secondary:hover,
-    .giscus-wrapper button.btn-secondary:hover {
-        background-color: var(--text-muted) !important;
+    .twikoo-wrapper .tk-input .tk-field:focus {
+        border-bottom-color: var(--accent-color) !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
 
-    .giscus-wrapper input:focus,
-    .giscus-wrapper textarea:focus,
-    .giscus-wrapper .giscus input:focus,
-    .giscus-wrapper .giscus textarea:focus {
-        border-color: var(--accent-color) !important;
-        box-shadow: 0 0 0 3px rgba(128, 128, 128, 0.2) !important;
+    .twikoo-wrapper .tk-input .tk-field::placeholder {
+        color: var(--text-muted) !important;
+        opacity: 0.5 !important;
+    }
+
+    .twikoo-wrapper .tk-input .tk-label {
+        font-size: 0.75rem !important;
+        color: var(--text-muted) !important;
+        font-weight: 400 !important;
+        margin-bottom: 1px !important;
+        opacity: 0.7 !important;
+    }
+
+    .twikoo-wrapper .tk-input .tk-submit {
+        background-color: transparent !important;
+        color: var(--accent-color) !important;
+        border: 1px solid var(--accent-color) !important;
+        border-radius: 4px !important;
+        padding: 2px 16px !important;
+        font-size: 0.85rem !important;
+        transition: all 0.3s ease !important;
+        cursor: pointer !important;
+    }
+
+    .twikoo-wrapper .tk-input .tk-submit:hover {
+        background-color: var(--accent-color) !important;
+        color: #ffffff !important;
+    }
+
+    .twikoo-wrapper .tk-input .tk-preview {
+        color: var(--text-muted) !important;
+        border: none !important;
+        background: transparent !important;
+        font-size: 0.85rem !important;
+        cursor: pointer !important;
+    }
+
+    .twikoo-wrapper .tk-input .tk-preview:hover {
+        color: var(--accent-color) !important;
+    }
+
+    .twikoo-wrapper .tk-comment {
+        border-bottom: 1px solid var(--border-color) !important;
+        padding: 12px 0 !important;
+    }
+
+    .twikoo-wrapper .tk-comment .tk-nick {
+        color: var(--text-primary) !important;
+        font-weight: 600 !important;
+    }
+
+    .twikoo-wrapper .tk-comment .tk-time {
+        color: var(--text-muted) !important;
+        font-size: 0.75rem !important;
+    }
+
+    .twikoo-wrapper .tk-comment .tk-content {
+        color: var(--text-primary) !important;
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+    }
+
+    .twikoo-wrapper .tk-footer {
+        opacity: 0.25 !important;
+        font-size: 0.65rem !important;
+        text-align: center !important;
+        margin-top: 8px !important;
+        color: var(--text-muted) !important;
+        transition: opacity 0.3s ease !important;
+    }
+
+    .twikoo-wrapper .tk-footer:hover {
+        opacity: 0.5 !important;
+    }
+
+    /* 隐藏评论标题行和排序标签 */
+    .twikoo-wrapper .tk-comment-header,
+    .twikoo-wrapper .tk-comments-title,
+    .twikoo-wrapper .tk-sort {
+        display: none !important;
+    }
+
+    /* 隐藏系统信息和IP地址 */
+    .twikoo-wrapper .tk-comment .tk-extra {
+        display: none !important;
     }
 
     /* ===== 响应式 ===== */
@@ -512,6 +586,10 @@ title: 文章模板
         .article-footer {
             flex-direction: column;
             align-items: flex-start;
+        }
+        .twikoo-wrapper .tk-input .tk-field {
+            font-size: 0.9rem !important;
+            padding: 4px 2px !important;
         }
     }
     </style>
@@ -551,8 +629,8 @@ title: 文章模板
                 <div class="loading-state">📖 加载文章中...</div>
             </div>
 
-            <!-- Giscus 评论容器 -->
-            <div class="giscus-wrapper" id="giscus-wrapper"></div>
+            <!-- Twikoo 评论容器 -->
+            <div class="twikoo-wrapper" id="twikoo-wrapper"></div>
         </div>
     </div>
 
@@ -564,6 +642,56 @@ title: 文章模板
         const scrolled = (winScroll / height) * 100;
         document.getElementById('progressBar').style.width = scrolled + '%';
     });
+
+    // ===== 清理 Twikoo UI 中不需要的元素 =====
+    function cleanTwikooUI() {
+        const wrapper = document.getElementById('twikoo-wrapper');
+        if (!wrapper) return;
+
+        const header = wrapper.querySelector('.tk-comment-header');
+        if (header) header.remove();
+
+        const title = wrapper.querySelector('.tk-comments-title');
+        if (title) title.remove();
+
+        const sort = wrapper.querySelector('.tk-sort');
+        if (sort) sort.remove();
+
+        const extras = wrapper.querySelectorAll('.tk-comment .tk-extra');
+        extras.forEach(el => el.style.display = 'none');
+    }
+
+    // ===== 加载 Twikoo 评论 =====
+    function loadTwikoo() {
+        const wrapper = document.getElementById('twikoo-wrapper');
+        wrapper.innerHTML = '<div class="loading-state">💬 加载评论中...</div>';
+
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/twikoo@1.7.13/dist/twikoo.all.min.js';
+        script.async = true;
+
+        script.onload = function() {
+            if (typeof twikoo !== 'undefined') {
+                twikoo.init({
+                    envId: 'https://sylvie-2026.netlify.app/.netlify/functions/twikoo',
+                    el: '#twikoo-wrapper',
+                    lang: 'zh-CN',
+                    path: window.location.pathname,
+                }).then(function() {
+                    setTimeout(cleanTwikooUI, 300);
+                }).catch(function(err) {
+                    console.error('Twikoo 初始化失败:', err);
+                    wrapper.innerHTML = '<div class="error-state">⚠️ 评论加载失败，请稍后刷新重试</div>';
+                });
+            }
+        };
+
+        script.onerror = function() {
+            wrapper.innerHTML = '<div class="error-state">⚠️ 评论加载失败，请检查网络连接</div>';
+        };
+
+        wrapper.appendChild(script);
+    }
 
     // ===== 主题切换功能 =====
     (function() {
@@ -622,7 +750,6 @@ title: 文章模板
     (function() {
         const container = document.getElementById('post-container');
         const titleElement = document.getElementById('articleTitle');
-        const giscusWrapper = document.getElementById('giscus-wrapper');
 
         const urlParams = new URLSearchParams(window.location.search);
         const postPath = urlParams.get('path');
@@ -660,27 +787,6 @@ title: 文章模板
                 document.title = `${post.title} · SYLVIE`;
                 const titleText = titleElement.querySelector('.title-text');
                 if (titleText) titleText.textContent = post.title;
-
-                // 加载 Giscus 评论
-                const term = post.path.replace(/^\//, '');
-                giscusWrapper.innerHTML = '';
-                const script = document.createElement('script');
-                script.src = 'https://giscus.app/client.js';
-                script.setAttribute('data-repo', 'chu-bao/my-blog-comments');
-                script.setAttribute('data-repo-id', 'R_kgDORd4YvQ');
-                script.setAttribute('data-category', 'Announcements');
-                script.setAttribute('data-category-id', 'DIC_kwDORd4Yvc4C3pC6');
-                script.setAttribute('data-mapping', 'specific');
-                script.setAttribute('data-term', term);
-                script.setAttribute('data-strict', '1');
-                script.setAttribute('data-reactions-enabled', '0');
-                script.setAttribute('data-emit-metadata', '0');
-                script.setAttribute('data-input-position', 'bottom');
-                script.setAttribute('data-theme', 'dark_dimmed');
-                script.setAttribute('data-lang', 'zh-CN');
-                script.setAttribute('crossorigin', 'anonymous');
-                script.async = true;
-                giscusWrapper.appendChild(script);
 
                 // 获取标签
                 let tags = [];
@@ -738,6 +844,9 @@ title: 文章模板
                         </footer>
                     </article>
                 `;
+
+                // 文章内容加载完成后，加载 Twikoo 评论
+                loadTwikoo();
             })
             .catch(error => {
                 console.error('加载失败:', error);
