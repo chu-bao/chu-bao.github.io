@@ -226,16 +226,121 @@ title: 留言板
             border-bottom-color: var(--accent-color);
         }
 
-        /* ===== Twikoo 评论容器 ===== */
+        /* ========== Twikoo 评论区精简样式 ========== */
         .twikoo-wrapper {
             margin-top: 0px;
             width: 100%;
             min-height: 400px;
         }
 
-        /* ===== 隐藏"X条评论"文字 ===== */
-        .twikoo-wrapper .tk-comments-title {
+        /* 1. 隐藏评论标题行（"X条评论" + 排序标签） */
+        .twikoo-wrapper .tk-comment-header,
+        .twikoo-wrapper .tk-comments-title,
+        .twikoo-wrapper .tk-sort {
             display: none !important;
+        }
+
+        /* 2. 隐藏系统信息和IP地址 */
+        .twikoo-wrapper .tk-comment .tk-extra {
+            display: none !important;
+        }
+
+        /* 3. 精简输入框样式 - 无边框，只有下划线 */
+        .twikoo-wrapper .tk-input .tk-field {
+            border: none !important;
+            border-bottom: 1px solid var(--border-color) !important;
+            border-radius: 0 !important;
+            padding: 6px 4px !important;
+            background: transparent !important;
+            transition: border-color 0.3s ease !important;
+            font-size: 0.95rem !important;
+            color: var(--text-primary) !important;
+        }
+
+        .twikoo-wrapper .tk-input .tk-field:focus {
+            border-bottom-color: var(--accent-color) !important;
+            box-shadow: none !important;
+            outline: none !important;
+        }
+
+        .twikoo-wrapper .tk-input .tk-field::placeholder {
+            color: var(--text-muted) !important;
+            opacity: 0.5 !important;
+        }
+
+        /* 输入框标签 - 更淡更小 */
+        .twikoo-wrapper .tk-input .tk-label {
+            font-size: 0.75rem !important;
+            color: var(--text-muted) !important;
+            font-weight: 400 !important;
+            margin-bottom: 1px !important;
+            opacity: 0.7 !important;
+        }
+
+        /* 提交按钮 - 低调边框 */
+        .twikoo-wrapper .tk-input .tk-submit {
+            background-color: transparent !important;
+            color: var(--accent-color) !important;
+            border: 1px solid var(--accent-color) !important;
+            border-radius: 4px !important;
+            padding: 2px 16px !important;
+            font-size: 0.85rem !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+        }
+
+        .twikoo-wrapper .tk-input .tk-submit:hover {
+            background-color: var(--accent-color) !important;
+            color: #ffffff !important;
+        }
+
+        /* 预览按钮 */
+        .twikoo-wrapper .tk-input .tk-preview {
+            color: var(--text-muted) !important;
+            border: none !important;
+            background: transparent !important;
+            font-size: 0.85rem !important;
+            cursor: pointer !important;
+        }
+
+        .twikoo-wrapper .tk-input .tk-preview:hover {
+            color: var(--accent-color) !important;
+        }
+
+        /* 评论列表 */
+        .twikoo-wrapper .tk-comment {
+            border-bottom: 1px solid var(--border-color) !important;
+            padding: 12px 0 !important;
+        }
+
+        .twikoo-wrapper .tk-comment .tk-nick {
+            color: var(--text-primary) !important;
+            font-weight: 600 !important;
+        }
+
+        .twikoo-wrapper .tk-comment .tk-time {
+            color: var(--text-muted) !important;
+            font-size: 0.75rem !important;
+        }
+
+        .twikoo-wrapper .tk-comment .tk-content {
+            color: var(--text-primary) !important;
+            font-size: 0.95rem !important;
+            line-height: 1.6 !important;
+        }
+
+        /* 4. 精简 "Powered by Twikoo" */
+        .twikoo-wrapper .tk-footer {
+            opacity: 0.25 !important;
+            font-size: 0.65rem !important;
+            text-align: center !important;
+            margin-top: 8px !important;
+            color: var(--text-muted) !important;
+            transition: opacity 0.3s ease !important;
+        }
+
+        .twikoo-wrapper .tk-footer:hover {
+            opacity: 0.5 !important;
         }
 
         .loading-indicator {
@@ -261,6 +366,10 @@ title: 留言板
                 width: 28px;
                 height: 28px;
                 font-size: 0.95rem;
+            }
+            .twikoo-wrapper .tk-input .tk-field {
+                font-size: 0.9rem !important;
+                padding: 4px 2px !important;
             }
         }
     </style>
@@ -342,7 +451,7 @@ title: 留言板
                 });
         }
 
-        // ===== Twikoo 评论加载（默认折叠，点击展开） =====
+        // ===== Twikoo 评论加载 =====
         function loadTwikoo() {
             const wrapper = document.getElementById('twikoo-wrapper');
             
@@ -360,7 +469,6 @@ title: 留言板
                         el: '#twikoo-wrapper',
                         lang: 'zh-CN',
                         path: window.location.pathname,
-                        // 不设置 inputPosition，使用默认行为（点击输入框后展开完整表单）
                     }).then(function() {
                         console.log('Twikoo 初始化成功');
                         const loadingMsg = document.getElementById('loading-message');
