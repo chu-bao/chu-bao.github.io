@@ -36,8 +36,6 @@ title: 留言板
             --progress-bg: #f2f4f8;
             --stat-text: #7a8a9e;
             --site-title: #2c3e50;
-            --guestbook-title: #2c3e50;
-            --guestbook-desc: #7a8a9e;
             --theme-border-color: rgba(44, 62, 80, 0.3);
             --theme-hover-bg: rgba(128, 128, 128, 0.12);
             --lottie-bg: transparent;
@@ -64,8 +62,6 @@ title: 留言板
             --progress-bg: #3a3e45;
             --stat-text: #a8b0be;
             --site-title: #d4d8e0;
-            --guestbook-title: #d4d8e0;
-            --guestbook-desc: #a8b0be;
             --theme-border-color: rgba(255, 255, 255, 0.25);
             --theme-hover-bg: rgba(209, 154, 102, 0.15);
             --lottie-bg: transparent;
@@ -230,31 +226,16 @@ title: 留言板
             border-bottom-color: var(--accent-color);
         }
 
-        /* ===== 留言板标题 ===== */
-        .guestbook-header {
-            margin-bottom: 32px;
-            text-align: center;
-        }
-
-        .guestbook-title {
-            font-size: 2rem;
-            font-weight: 300;
-            color: var(--guestbook-title);
-            margin-bottom: 8px;
-            transition: color 0.4s ease;
-        }
-
-        .guestbook-desc {
-            color: var(--guestbook-desc);
-            font-size: 0.9rem;
-            transition: color 0.4s ease;
-        }
-
         /* ===== Twikoo 评论容器 ===== */
         .twikoo-wrapper {
-            margin-top: 30px;
+            margin-top: 0px;
             width: 100%;
             min-height: 400px;
+        }
+
+        /* ===== 隐藏"X条评论"文字 ===== */
+        .twikoo-wrapper .tk-comments-title {
+            display: none !important;
         }
 
         .loading-indicator {
@@ -280,9 +261,6 @@ title: 留言板
                 width: 28px;
                 height: 28px;
                 font-size: 0.95rem;
-            }
-            .guestbook-title {
-                font-size: 1.6rem;
             }
         }
     </style>
@@ -312,11 +290,6 @@ title: 留言板
                     <a href="/categories/" class="nav-link">分类</a>
                     <a href="/guestbook.html" class="nav-link active">留言</a>
                 </div>
-            </div>
-
-            <div class="guestbook-header">
-                <h1 class="guestbook-title">留言板</h1>
-                <p class="guestbook-desc">欢迎留下你的想法和建议，一起交流分享</p>
             </div>
 
             <!-- Twikoo 评论容器 -->
@@ -369,25 +342,25 @@ title: 留言板
                 });
         }
 
-        // ===== Twikoo 评论加载（使用 Netlify 后端） =====
+        // ===== Twikoo 评论加载（默认折叠，点击展开） =====
         function loadTwikoo() {
             const wrapper = document.getElementById('twikoo-wrapper');
             
             wrapper.innerHTML = '<div id="loading-message" class="loading-indicator">加载留言板中...</div>';
             
             const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.all.min.js';
+            script.src = 'https://cdn.jsdelivr.net/npm/twikoo@1.7.13/dist/twikoo.all.min.js';
             script.async = true;
             
             script.onload = function() {
                 console.log('Twikoo 库加载成功');
                 if (typeof twikoo !== 'undefined') {
                     twikoo.init({
-                        // ===== 你的 Netlify Twikoo 后端地址 =====
                         envId: 'https://sylvie-2026.netlify.app/.netlify/functions/twikoo',
                         el: '#twikoo-wrapper',
                         lang: 'zh-CN',
                         path: window.location.pathname,
+                        // 不设置 inputPosition，使用默认行为（点击输入框后展开完整表单）
                     }).then(function() {
                         console.log('Twikoo 初始化成功');
                         const loadingMsg = document.getElementById('loading-message');
